@@ -31,6 +31,148 @@
 #include <stdio.h>
 #include "shared.h"
 
+//Function for outputting register 0 value 
+__asm uint32_t returnReg0(void){
+	
+	BX	LR;
+	
+}
+
+//Function for outputting register 1 value 
+__asm uint32_t returnReg1(void){
+	
+	MOVS	r0,r1;
+	BX		LR;
+	
+}
+
+//Function for outputting register 2 value 
+__asm uint32_t returnReg2(void){
+	
+	MOVS	r0,r2;
+	BX		LR;
+	
+}
+
+//Function for outputting register 3 value 
+__asm uint32_t returnReg3(void){
+	
+	MOVS	r0,r3;
+	BX		LR;
+	
+}
+
+//Function for outputting register 4 value 
+__asm uint32_t returnReg4(void){
+	
+	MOVS	r0,r4;
+	BX		LR;
+	
+}
+
+//Function for outputting register 5 value 
+__asm uint32_t returnReg5(void){
+	
+	MOVS	r0,r5;
+	BX		LR;
+	
+}
+
+//Function for outputting register 6 value 
+__asm uint32_t returnReg6(void){
+	
+	MOVS	r0,r6;
+	BX		LR;
+	
+}
+
+//Function for outputting register 7 value 
+__asm uint32_t returnReg7(void){
+	
+	MOVS	r0,r7;
+	BX		LR;
+	
+}
+
+//Function for outputting register 8 value 
+__asm uint32_t returnReg8(void){
+	
+	MOV	r0,r8;
+	BX		LR;
+	
+}
+
+//Function for outputting register 9 value 
+__asm uint32_t returnReg9(void){
+	
+	MOV	r0,r9;
+	BX		LR;
+	
+}
+
+//Function for outputting register 10 value 
+__asm uint32_t returnReg10(void){
+	
+	MOV	r0,r10;
+	BX		LR;
+	
+}
+
+//Function for outputting register 11 value 
+__asm uint32_t returnReg11(void){
+	
+	MOV	r0,r11;
+	BX		LR;
+	
+}
+
+//Function for outputting register 12 value 
+__asm uint32_t returnReg12(void){
+	
+	MOV	r0,r12;
+	BX		LR;
+	
+}
+
+//Function for outputting register 13 value 
+__asm uint32_t returnReg13(void){
+	
+	MOV	r0,r13;
+	BX		LR;
+	
+}
+
+//Function for outputting register 14 value 
+__asm uint32_t returnReg14(void){
+	
+	MOV	r0,r14;
+	BX		LR;
+	
+}
+
+//Function for outputting register 15 value 
+__asm uint32_t returnReg15(void){
+	
+	MOV	r0,r15;
+	BX		LR;
+	
+}
+
+void cutUpNSendWord(uint32_t myWord){
+	
+	UART_msg_put("Cutting up word");
+
+//	char myByte;
+//	
+//	for(uint8_t i = 4;i < 4;i++){
+//	
+//		myByte = (uint8_t)(myByte>>(i*8));
+//		UART_hex_put(myByte);
+//	
+//	}
+	
+}
+
 
 /*******************************************************************************
 * Set Display Mode Function
@@ -278,6 +420,7 @@ void monitor(void)
                //  add flow data output here, use UART_hex_put or similar for 
                // numbers
                UART_msg_put(" Freq: ");
+							UART_msg_put(" Freq: ");
                //  add flow data output here, use UART_hex_put or similar for 
                // numbers
                
@@ -286,6 +429,9 @@ void monitor(void)
                //  Create a display of  error counts, sensor states, and
                //  ARM Registers R0-R15
                
+							//UART_msg_put("HAPPENING??");
+							//cutUpNSendWord(8);
+							
                //  Create a command to read a section of Memory and display it
                
                

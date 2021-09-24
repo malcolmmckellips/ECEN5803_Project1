@@ -87,19 +87,19 @@ tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100
     {
 
         count++;               // counts the number of times through the loop
-//      __enable_interrupts();
-//      __clear_watchdog_timer();
+//     __enable_interrupts();
+//     __clear_watchdog_timer();
 
    /****************      ECEN 5803 add code as indicated   ***************/
     // uncomment this section after adding monitor code. 
-    /* 
+    
         serial();            // Polls the serial port
         chk_UART_msg();     // checks for a serial port message received
         monitor();           // Sends serial port output messages depending
                          //     on commands received and display mode
 
         if ((SwTimerIsrCounter & 0x1FFF) > 0x0FFF)
-    */
+   
         {
             flip();  // Toggle Green LED
         }
