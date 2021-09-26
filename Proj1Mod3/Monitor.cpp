@@ -158,6 +158,24 @@ __asm uint32_t returnReg15(void){
 	
 }
 
+__asm uint32_t loadOneFromStack(uint32_t stackOffset,uint32_t stackBase){
+	
+	ADD	r0, r0, SP //Store sum of offset from SP in r0
+	
+	CMP r0, r1
+	
+	BGE AtStackBase
+	
+	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
+	// MOVS r1, #0
+	
+	BX LR
+	
+AtStackBase	
+	MOVS r0, #0
+	BX	LR
+}
+
 void cutUpNSendWord(uint32_t myWord){
 	
 	char myByte;
@@ -173,11 +191,53 @@ void cutUpNSendWord(uint32_t myWord){
 	
 }
 
-void stackSixteen(void){
+void displayRegisters(void){
 	
+				UART_direct_msg_put("\r\nReg 0: ");			
+				cutUpNSendWord(returnReg0());
+				UART_direct_msg_put("Reg 1: ");		
+				cutUpNSendWord(returnReg1());
+				UART_direct_msg_put("Reg 2: ");		
+				cutUpNSendWord(returnReg1());
+				UART_direct_msg_put("Reg 3: ");		
+				cutUpNSendWord(returnReg3());
+				UART_direct_msg_put("Reg 4: ");		
+				cutUpNSendWord(returnReg4());
+				UART_direct_msg_put("Reg 5: ");		
+				cutUpNSendWord(returnReg5());
+				UART_direct_msg_put("Reg 6: ");		
+				cutUpNSendWord(returnReg6());
+				UART_direct_msg_put("Reg 7: ");		
+				cutUpNSendWord(returnReg7());
+				UART_direct_msg_put("Reg 8: ");		
+				cutUpNSendWord(returnReg8());
+				UART_direct_msg_put("Reg 9: ");		
+				cutUpNSendWord(returnReg9());
+				UART_direct_msg_put("Reg 10: ");		
+				cutUpNSendWord(returnReg10());
+				UART_direct_msg_put("Reg 11: ");		
+				cutUpNSendWord(returnReg11());
+				UART_direct_msg_put("Reg 12: ");		
+				cutUpNSendWord(returnReg12());
+				UART_direct_msg_put("Reg 13: ");		
+				cutUpNSendWord(returnReg13());
+				UART_direct_msg_put("Reg 14: ");		
+				cutUpNSendWord(returnReg14());
+				UART_direct_msg_put("Reg 15: ");		
+				cutUpNSendWord(returnReg15());
 	
+}
+
+void	displayStackSixteen(void){
 	
+		char stackPtrMsg[20];	
 	
+		for(int i=0;i<16;i++){
+			sprintf(stackPtrMsg,"SP + %d: ",(i*4));
+			UART_direct_msg_put(stackPtrMsg);
+			cutUpNSendWord(loadOneFromStack(i*4,INITIAL_SP));
+		
+		}
 }
 
 
@@ -206,6 +266,8 @@ void set_display_mode(void)
   UART_direct_msg_put("\r\n Hit QUI - Quiet");
   UART_direct_msg_put("\r\n Hit DEB - Debug" );
   UART_direct_msg_put("\r\n Hit V - Version#\r\n");
+  UART_direct_msg_put("\r\n Hit S - Display the last 16 words from the Stack\r\n");
+  UART_direct_msg_put("\r\n Hit R - Display the contents of all the registers\r\n");
   UART_direct_msg_put("\r\nSelect:  ");
   
 }
@@ -252,7 +314,8 @@ void chk_UART_msg(void)
          }
          else if ((display_mode == QUIET) && (msg_buf[0] != 0x02) && 
                   (msg_buf[0] != 'D') && (msg_buf[0] != 'N') && 
-                  (msg_buf[0] != 'V') &&
+                  (msg_buf[0] != 'V') && (msg_buf[0] != 'M') && 
+									(msg_buf[0] != 'S') && (msg_buf[0] != 'R') &&
                   (msg_buf_idx != 0))
          {                          // if first character is bad in Quiet mode
             msg_buf_idx = 0;        // then start over
@@ -324,7 +387,27 @@ void UART_msg_process(void)
             UART_msg_put("\r\nSelect  ");
             display_timer = 0;
             break;
+			
+			
+		case 'R':
+            display_mode = REGISTERS;
+            UART_msg_put("\r\n");
+			
+            displayRegisters();
+			
+            UART_msg_put("\r\nSelect  ");
+            display_timer = 0;
+            break;	
                 
+		case 'S':
+            display_mode = STACK;
+            UART_msg_put("\r\n");
+			
+            displayStackSixteen();
+			
+            UART_msg_put("\r\nSelect  ");
+            display_timer = 0;
+            break;			
          default:
             err = 1;
       }
@@ -435,52 +518,77 @@ void monitor(void)
  /****************      ECEN 5803 add code as indicated   ***************/             
                //  Create a display of  error counts, sensor states, and
                //  ARM Registers R0-R15
-				UART_direct_msg_put("\r\nReg 0: ");			
-				cutUpNSendWord(returnReg0());
-				UART_direct_msg_put("Reg 1: ");		
-				cutUpNSendWord(returnReg1());
-				UART_direct_msg_put("Reg 2: ");		
-				cutUpNSendWord(returnReg1());
-				UART_direct_msg_put("Reg 3: ");		
-				cutUpNSendWord(returnReg3());
-				UART_direct_msg_put("Reg 4: ");		
-				cutUpNSendWord(returnReg4());
-				UART_direct_msg_put("Reg 5: ");		
-				cutUpNSendWord(returnReg5());
-				UART_direct_msg_put("Reg 6: ");		
-				cutUpNSendWord(returnReg6());
-				UART_direct_msg_put("Reg 7: ");		
-				cutUpNSendWord(returnReg7());
-				UART_direct_msg_put("Reg 8: ");		
-				cutUpNSendWord(returnReg8());
-				UART_direct_msg_put("Reg 9: ");		
-				cutUpNSendWord(returnReg9());
-				UART_direct_msg_put("Reg 10: ");		
-				cutUpNSendWord(returnReg10());
-				UART_direct_msg_put("Reg 11: ");		
-				cutUpNSendWord(returnReg11());
-				UART_direct_msg_put("Reg 12: ");		
-				cutUpNSendWord(returnReg12());
-				UART_direct_msg_put("Reg 13: ");		
-				cutUpNSendWord(returnReg13());
-				UART_direct_msg_put("Reg 14: ");		
-				cutUpNSendWord(returnReg14());
-				UART_direct_msg_put("Reg 15: ");		
-				cutUpNSendWord(returnReg15());
+				// UART_direct_msg_put("\r\nReg 0: ");			
+				// cutUpNSendWord(returnReg0());
+				// UART_direct_msg_put("Reg 1: ");		
+				// cutUpNSendWord(returnReg1());
+				// UART_direct_msg_put("Reg 2: ");		
+				// cutUpNSendWord(returnReg1());
+				// UART_direct_msg_put("Reg 3: ");		
+				// cutUpNSendWord(returnReg3());
+				// UART_direct_msg_put("Reg 4: ");		
+				// cutUpNSendWord(returnReg4());
+				// UART_direct_msg_put("Reg 5: ");		
+				// cutUpNSendWord(returnReg5());
+				// UART_direct_msg_put("Reg 6: ");		
+				// cutUpNSendWord(returnReg6());
+				// UART_direct_msg_put("Reg 7: ");		
+				// cutUpNSendWord(returnReg7());
+				// UART_direct_msg_put("Reg 8: ");		
+				// cutUpNSendWord(returnReg8());
+				// UART_direct_msg_put("Reg 9: ");		
+				// cutUpNSendWord(returnReg9());
+				// UART_direct_msg_put("Reg 10: ");		
+				// cutUpNSendWord(returnReg10());
+				// UART_direct_msg_put("Reg 11: ");		
+				// cutUpNSendWord(returnReg11());
+				// UART_direct_msg_put("Reg 12: ");		
+				// cutUpNSendWord(returnReg12());
+				// UART_direct_msg_put("Reg 13: ");		
+				// cutUpNSendWord(returnReg13());
+				// UART_direct_msg_put("Reg 14: ");		
+				// cutUpNSendWord(returnReg14());
+				// UART_direct_msg_put("Reg 15: ");		
+				// cutUpNSendWord(returnReg15());
 							
                //  Create a command to read a section of Memory and display it
                
                
+			   
                //  Create a command to read 16 words from the current stack 
                // and display it in reverse chronological order.
-              
-              
+				//UART_direct_msg_put("\r\n");
+				
+				// for(int i=0;i<16;i++){
+					// sprintf(stackPtrMsg,"SP + %d: ",(i*4));
+					// UART_direct_msg_put(stackPtrMsg);
+					// cutUpNSendWord(loadOneFromStack(i*4,INITIAL_SP));
+					
+				// }
+			  
+			  
                // clear flag to ISR      
                display_flag = 0;
              }   
-         }  
+         } 
          break;
-
+		case(REGISTERS):
+		{
+			display_flag = 0;
+		}
+		 break;
+		
+		case(STACK):
+		{
+			display_flag = 0;
+		}
+		 break;
+		
+		case(MEMORY):
+		{
+			display_flag = 0;
+		}
+		 break;
       default:
       {
          UART_msg_put("Mode Error");

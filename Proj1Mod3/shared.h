@@ -52,7 +52,7 @@
 #define COPYRIGHT "Copyright (c) University of Colorado" 
      
  enum boolean { FALSE, TRUE };           /// \enum boolean  
- enum dmode {QUIET, NORMAL, DEBUG, VERSION}; 
+ enum dmode {QUIET, NORMAL, DEBUG, VERSION, REGISTERS, STACK, MEMORY}; 
  
  typedef unsigned char UCHAR;       
  typedef unsigned char bit;
@@ -80,6 +80,7 @@ extern "C" {
  extern UCHAR *tx_out_ptr; /*pointer to the transmit out */                       
 #define RX_BUF_SIZE 10            /* size of receive buffer in bytes */
 #define TX_BUF_SIZE 40           /* size of transmit buffer in bytes */
+#define INITIAL_SP (0x20003000UL)
                                                                     
 /******************************************************************************
 * Some variable definitions are done in the module main.c and are externed in 
