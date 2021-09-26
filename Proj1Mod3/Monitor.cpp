@@ -160,16 +160,23 @@ __asm uint32_t returnReg15(void){
 
 void cutUpNSendWord(uint32_t myWord){
 	
-	UART_msg_put("Cutting up word");
+	char myByte;
 
-//	char myByte;
-//	
-//	for(uint8_t i = 4;i < 4;i++){
-//	
-//		myByte = (uint8_t)(myByte>>(i*8));
-//		UART_hex_put(myByte);
-//	
-//	}
+	
+	for(int i = 3;i > -1;i--){
+	
+		myByte = (uint8_t)(myWord>>(i*8));
+		UART_direct_hex_put(myByte);
+	
+	}
+	UART_direct_msg_put("\r\n");
+	
+}
+
+void stackSixteen(void){
+	
+	
+	
 	
 }
 
@@ -411,16 +418,16 @@ void monitor(void)
          {
             if (display_flag == 1)
             {
-               UART_msg_put("\r\nDEBUG ");
-               UART_msg_put(" Flow: ");
+               UART_msg_put("\r\nDEBUG \0");
+               UART_msg_put(" Flow: \0");
                // ECEN 5803 add code as indicated               
                //  add flow data output here, use UART_hex_put or similar for 
                // numbers
-               UART_msg_put(" Temp: ");
+               UART_msg_put(" Temp: \0");
                //  add flow data output here, use UART_hex_put or similar for 
                // numbers
-               UART_msg_put(" Freq: ");
-							UART_msg_put(" Freq: ");
+               UART_msg_put(" Freq: \0");
+
                //  add flow data output here, use UART_hex_put or similar for 
                // numbers
                
@@ -428,9 +435,38 @@ void monitor(void)
  /****************      ECEN 5803 add code as indicated   ***************/             
                //  Create a display of  error counts, sensor states, and
                //  ARM Registers R0-R15
-               
-							//UART_msg_put("HAPPENING??");
-							//cutUpNSendWord(8);
+				UART_direct_msg_put("\r\nReg 0: ");			
+				cutUpNSendWord(returnReg0());
+				UART_direct_msg_put("Reg 1: ");		
+				cutUpNSendWord(returnReg1());
+				UART_direct_msg_put("Reg 2: ");		
+				cutUpNSendWord(returnReg1());
+				UART_direct_msg_put("Reg 3: ");		
+				cutUpNSendWord(returnReg3());
+				UART_direct_msg_put("Reg 4: ");		
+				cutUpNSendWord(returnReg4());
+				UART_direct_msg_put("Reg 5: ");		
+				cutUpNSendWord(returnReg5());
+				UART_direct_msg_put("Reg 6: ");		
+				cutUpNSendWord(returnReg6());
+				UART_direct_msg_put("Reg 7: ");		
+				cutUpNSendWord(returnReg7());
+				UART_direct_msg_put("Reg 8: ");		
+				cutUpNSendWord(returnReg8());
+				UART_direct_msg_put("Reg 9: ");		
+				cutUpNSendWord(returnReg9());
+				UART_direct_msg_put("Reg 10: ");		
+				cutUpNSendWord(returnReg10());
+				UART_direct_msg_put("Reg 11: ");		
+				cutUpNSendWord(returnReg11());
+				UART_direct_msg_put("Reg 12: ");		
+				cutUpNSendWord(returnReg12());
+				UART_direct_msg_put("Reg 13: ");		
+				cutUpNSendWord(returnReg13());
+				UART_direct_msg_put("Reg 14: ");		
+				cutUpNSendWord(returnReg14());
+				UART_direct_msg_put("Reg 15: ");		
+				cutUpNSendWord(returnReg15());
 							
                //  Create a command to read a section of Memory and display it
                

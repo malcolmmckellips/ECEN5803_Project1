@@ -13,10 +13,10 @@
 --                
 --                
 --  Designed by:  Tim Scherr
---  Revised by:  Student's name 
+--  Revised by:  Erich Clever and Malcolm McKellips
 -- 
 -- Version: 2.0
--- Date of current revision:  2016-09-29   
+-- Date of current revision:  2021-09-20  
 -- Target Microcontroller: Freescale MKL25ZVMT4 
 -- Tools used:  ARM mbed compiler
 --              ARM mbed SDK
@@ -105,8 +105,12 @@ extern "C" {
    static   uint32_t System_Timer_count = 0; // 32 bits, counts for 
                                                   // 119 hours at 100 us period
    static   uint16_t timer0_count = 0; // 16 bits, counts for 
-                                          // 6.5 seconds at 100 us period                                                  
-   static   UCHAR timer_state = 0;   
+                                          // 6.5 seconds at 100 us period     
+										  
+   static   UCHAR LED_heartbeat = 79;  
+   UCHAR LED_heartbeatFlag = 0;  
+	 
+	 static   UCHAR timer_state = 0;   
    static   UCHAR long_time_state = 0; 
        //  variable which splits timer_states into groups
       //  tasks are run in their assigned group times
@@ -256,7 +260,16 @@ void timer0(void)
 //   Generate Outputs  ************************************
  
     //ECEN 5803 add code as indicated
-    // Create an 0.5 second RED LED heartbeat here. 
+    // Create an 0.5 second RED LED heartbeat here.
+
+		LED_heartbeat--;
+			
+		if(LED_heartbeat==0)
+		{
+				LED_heartbeatFlag=1;
+				LED_heartbeat=79;
+		}
+	
  
  
 

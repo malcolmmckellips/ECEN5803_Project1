@@ -12,10 +12,10 @@
 --               
 --                
 --  Designed by:  Tim Scherr
---  Revised by:  Student's name 
+--  Revised by:  Erich Clever and Malcolm McKellips 
 -- 
 -- Version: 2.0
--- Date of current revision:  2017-09-20   
+-- Date of current revision:  2021-09-20   
 -- Target Microcontroller: Freescale MKL25ZVMT4 
 -- Tools used:  ARM mbed compiler
 --              ARM mbed SDK
@@ -48,7 +48,7 @@
 #define LED_FLASH_PERIOD .5   /* in seconds */
  
 #define CLOCK_FREQUENCY_MHZ 8
-#define CODE_VERSION "2.0 2016/09/29"   /*   YYYY/MM/DD  */
+#define CODE_VERSION "2.1 2021/09/21"   /*   YYYY/MM/DD  */
 #define COPYRIGHT "Copyright (c) University of Colorado" 
      
  enum boolean { FALSE, TRUE };           /// \enum boolean  
@@ -66,6 +66,8 @@ extern "C" {
 /************************************************************************/
 /*             Global Variable declarations                             */
 /************************************************************************/
+ 
+ extern UCHAR LED_heartbeatFlag;
  
  extern unsigned char Error_status;          // Variable for debugging use
  extern UCHAR  display_timer;  // \var 1 second software timer for display   

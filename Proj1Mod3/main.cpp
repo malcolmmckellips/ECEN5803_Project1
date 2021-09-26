@@ -40,9 +40,9 @@ extern volatile uint16_t SwTimerIsrCounter;
 
 Ticker tick;             //  Creates a timer interrupt using mbed methods
  /****************      ECEN 5803 add code as indicated   ***************/
-DigitalOut greenLED(LED_GREEN);
-DigitalOut redLED(LED_RED);
-DigitalOut blueLED(LED_BLUE);                                                   
+DigitalOut greenLED(LED_GREEN,1);
+DigitalOut redLED(LED_RED,1);
+DigitalOut blueLED(LED_BLUE,1);
 
 Serial pc(USBTX, USBRX);     
  
@@ -54,9 +54,8 @@ void flip()
 int main() 
 {
 /****************      ECEN 5803 add code as indicated   ***************/
-tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
+	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 
-    pc.printf("Hello World!\n"); 
     uint32_t  count = 0;   
     
 // initialize serial buffer pointers
@@ -97,6 +96,14 @@ tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100
         chk_UART_msg();     // checks for a serial port message received
         monitor();           // Sends serial port output messages depending
                          //     on commands received and display mode
+
+		if(LED_heartbeatFlag)
+		{
+			
+			redLED = !redLED;
+			LED_heartbeatFlag=0;
+			
+		}
 
         if ((SwTimerIsrCounter & 0x1FFF) > 0x0FFF)
    

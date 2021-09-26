@@ -13,7 +13,7 @@
 --               
 --                
 --  Designed by:  Tim Scherr
---  Revised by:  Student's name 
+--  Revised by:  Erich Clever and Malcom McKellips
 -- 
 -- Version: 2.1
 -- Date of current revision:  2017-09-20   
