@@ -163,6 +163,8 @@ extern void UART_msg_process(void);          /* located in module monitors.c */
 extern void status_report(void);             /* located in module monitor.c */  
 extern void set_display_mode(void);          /* located in module monitor.c */
 
+extern UCHAR asc_to_hex(UCHAR); //Located in UART_poll.c, using for memorySect()
+
 #ifdef __cplusplus
 }
 #endif

@@ -27,17 +27,22 @@ Project File Date:  09/22/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'Proj1Mod3'
-compiling Monitor.cpp...
-Monitor.cpp(156): warning: A1609W: MOV <rd>,pc instruction does not set bit zero, so does not create a return address
 compiling timer0.cpp...
-compiling main.cpp...
+compiling Monitor.cpp...
+Monitor.cpp(370): warning:  #546-D: transfer of control bypasses initialization of:
+            variable "addressDesired"  (declared at line 437)
+        switch( chr ) 
+        ^
+Monitor.cpp(156): warning: A1609W: MOV <rd>,pc instruction does not set bit zero, so does not create a return address
+Monitor.cpp: 1 warning, 0 errors
 compiling UART_poll.cpp...
+compiling main.cpp...
 linking...
 .\BUILD\Proj1Mod3.axf: Warning: L6320W: Ignoring --keep command. Cannot find argument 'os_cb_sections'.
-Program Size: Code=21704 RO-data=2172 RW-data=136 ZI-data=604  
+Program Size: Code=22020 RO-data=2260 RW-data=136 ZI-data=604  
 Finished: 0 information, 1 warning and 0 error messages.
 FromELF: creating hex file...
-".\BUILD\Proj1Mod3.axf" - 0 Error(s), 2 Warning(s).
+".\BUILD\Proj1Mod3.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 

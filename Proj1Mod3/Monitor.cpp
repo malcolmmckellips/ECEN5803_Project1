@@ -176,6 +176,14 @@ AtStackBase
 	BX	LR
 }
 
+__asm uint32_t loadFromMem(uint32_t address){
+	
+	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
+	
+	BX LR
+	
+}
+
 void cutUpNSendWord(uint32_t myWord){
 	
 	char myByte;
@@ -230,6 +238,8 @@ void displayRegisters(void){
 
 void	displayStackSixteen(void){
 	
+		UART_msg_put("\r\n");
+		
 		char stackPtrMsg[20];	
 	
 		for(int i=0;i<16;i++){
@@ -240,6 +250,16 @@ void	displayStackSixteen(void){
 		}
 }
 
+void	displayMemSect(uint32_t baseAddress){
+	
+	char displayMemMsg[20];
+	sprintf(displayMemMsg,"\r\nContents of 0x%x: \r\n",baseAddress);
+	UART_direct_msg_put(displayMemMsg);
+	
+	uint32_t data = loadFromMem(baseAddress);
+	cutUpNSendWord(data);
+	
+}
 
 /*******************************************************************************
 * Set Display Mode Function
@@ -268,6 +288,7 @@ void set_display_mode(void)
   UART_direct_msg_put("\r\n Hit V - Version#\r\n");
   UART_direct_msg_put("\r\n Hit S - Display the last 16 words from the Stack\r\n");
   UART_direct_msg_put("\r\n Hit R - Display the contents of all the registers\r\n");
+	UART_direct_msg_put("\r\n Hit M then enter a 32-bit word-aligned HEX address - Display a word from memory\r\n");
   UART_direct_msg_put("\r\nSelect:  ");
   
 }
@@ -297,7 +318,7 @@ void chk_UART_msg(void)
          }
          else
          {
-           ;
+          ;
          }
          if( j == '\b' ) 
          {                             // backspace editor
@@ -315,7 +336,7 @@ void chk_UART_msg(void)
          else if ((display_mode == QUIET) && (msg_buf[0] != 0x02) && 
                   (msg_buf[0] != 'D') && (msg_buf[0] != 'N') && 
                   (msg_buf[0] != 'V') && (msg_buf[0] != 'M') && 
-									(msg_buf[0] != 'S') && (msg_buf[0] != 'R') &&
+				  (msg_buf[0] != 'S') && (msg_buf[0] != 'R') &&
                   (msg_buf_idx != 0))
          {                          // if first character is bad in Quiet mode
             msg_buf_idx = 0;        // then start over
@@ -324,10 +345,11 @@ void chk_UART_msg(void)
  
             msg_buf[msg_buf_idx] = j;
             msg_buf_idx++;
-            if (msg_buf_idx > 2)
-            {
-               UART_msg_process();
-            }
+            // if (msg_buf_idx > 2)
+            // {
+               // UART_msg_process();
+            // }
+			//Personalizing ;)
          }
       }
    }
@@ -407,11 +429,36 @@ void UART_msg_process(void)
 			
             UART_msg_put("\r\nSelect  ");
             display_timer = 0;
-            break;			
-         default:
+            break;
+		case 'M':
+			display_mode = MEMORY;
+			UART_msg_put("\r\n");
+			
+			uint32_t addressDesired=0;
+			
+			for(int i = 1;i<9;i++){
+				
+				addressDesired += (((uint32_t)(asc_to_hex(msg_buf[i])))<<((8-i)*4));
+//				UART_direct_msg_put("\r\nSelect  ");
+			}
+			
+			if( (addressDesired%4)==0 ){
+			
+				displayMemSect(addressDesired);
+			
+				UART_direct_msg_put("\r\nSelect  ");   
+  
+			}
+			else{
+				UART_direct_msg_put("\r\n Address must be word-aligned (divisible by 4)\r\n");
+			}
+			display_timer = 0;
+			break;
+			
+			default:
             err = 1;
-      }
-   }
+			}  
+		}
 
    else 
    {                                 // Lower Case
@@ -553,8 +600,6 @@ void monitor(void)
 							
                //  Create a command to read a section of Memory and display it
                
-               
-			   
                //  Create a command to read 16 words from the current stack 
                // and display it in reverse chronological order.
 				//UART_direct_msg_put("\r\n");
@@ -565,6 +610,8 @@ void monitor(void)
 					// cutUpNSendWord(loadOneFromStack(i*4,INITIAL_SP));
 					
 				// }
+				
+				
 			  
 			  
                // clear flag to ISR      
