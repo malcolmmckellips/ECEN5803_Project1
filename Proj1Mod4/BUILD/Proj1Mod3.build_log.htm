@@ -1,0 +1,66 @@
+<html>
+<body>
+<pre>
+<h1>µVision Build Log</h1>
+<h2>Tool Versions:</h2>
+IDE-Version: µVision V5.35.0.0
+Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
+License Information: Malcolm McKellips, CU Boulder, LIC=----
+ 
+Tool Versions:
+Toolchain:       MDK-Lite  Version: 5.35.0.2
+Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
+C Compiler:      Armcc.exe V5.06 update 7 (build 960)
+Assembler:       Armasm.exe V5.06 update 7 (build 960)
+Linker/Locator:  ArmLink.exe V5.06 update 7 (build 960)
+Library Manager: ArmAr.exe V5.06 update 7 (build 960)
+Hex Converter:   FromElf.exe V5.06 update 7 (build 960)
+CPU DLL:         
+Dialog DLL:      DCM.DLL V1.17.3.0
+Target DLL:      PEMicro\Pemicro_ArmCortexInterface.dll V1.3.0.0
+Dialog DLL:      TCM.DLL V1.53.0.0
+ 
+<h2>Project:</h2>
+C:\Users\Freck\OneDrive\Documents\GitHub\ECEN5803_Project1\Proj1Mod4\Proj1Mod3.uvprojx
+Project File Date:  10/01/2021
+
+<h2>Output:</h2>
+*** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
+Rebuild target 'Proj1Mod3'
+compiling timer0.cpp...
+compiling Monitor.cpp...
+Monitor.cpp(370): warning:  #546-D: transfer of control bypasses initialization of:
+            variable "addressDesired"  (declared at line 437)
+        switch( chr ) 
+        ^
+Monitor.cpp(156): warning: A1609W: MOV <rd>,pc instruction does not set bit zero, so does not create a return address
+Monitor.cpp: 1 warning, 0 errors
+compiling UART_poll.cpp...
+compiling main.cpp...
+main.cpp(282): warning:  #177-D: variable "PID"  was declared but never referenced
+  	float PID  = 2.9; //inner pipe diameter = 2.9 inches
+main.cpp(283): warning:  #177-D: variable "d"  was declared but never referenced
+  	float d 	 = 0.5; //bluff body width=d of 0.5 inches
+main.cpp: 2 warnings, 0 errors
+linking...
+.\BUILD\Proj1Mod3.axf: Warning: L6320W: Ignoring --keep command. Cannot find argument 'os_cb_sections'.
+Program Size: Code=19536 RO-data=4688 RW-data=156 ZI-data=604  
+Finished: 0 information, 1 warning and 0 error messages.
+FromELF: creating hex file...
+".\BUILD\Proj1Mod3.axf" - 0 Error(s), 5 Warning(s).
+
+<h2>Software Packages used:</h2>
+
+Package Vendor: Keil
+                http://www.keil.com/pack/Keil.Kinetis_KLxx_DFP.1.15.0.pack
+                Keil.Kinetis_KLxx_DFP.1.15.0
+                NXP Kinetis KLxx Series Device Support and Examples
+
+<h2>Collection of Component include folders:</h2>
+  C:\Users\Freck\AppData\Local\Arm\Packs\Keil\Kinetis_KLxx_DFP\1.15.0\Device\Include
+
+<h2>Collection of Component Files used:</h2>
+Build Time Elapsed:  00:00:01
+</pre>
+</body>
+</html>
