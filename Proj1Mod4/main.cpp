@@ -221,7 +221,8 @@ uint16_t readADC(uint8_t input_ch){
             
         //channel 2 (PTB2 -> ch26) Temperature sensor
         case CHANNEL_2:
-            ADC0->SC1[0] = CH1_ADC_CH; //ch30 is input
+						SIM->SCGC6 |= SIM_SCGC6_ADC0_MASK;
+            ADC0->SC1[0] = CH2_ADC_CH; //ch26 is input
             ADC0->CFG1   &= ~(NORMAL_POWER_CONFIG << CFG1_ADLPC); //We want to be in normal power mode (0)  
             ADC0->CFG1   &= ~(CLOCK_RATIO_1 << CFG1_ADIV); //We want ADIV clk selecct to 00 for divide ratio of 1
             ADC0->CFG1   |= (LONG_SAMPLE << CFG1_ADLSMP);  //Long samples
@@ -287,10 +288,27 @@ float calculate_flow(uint16_t freq, float temp){
 	
 	return flow;
 }
-	
 
 int main() 
 {
+	
+	//To test ADC: 
+	
+	calibrateADC();
+	
+	while (1) {
+        //Calculate temperature from Fig. 28-63
+				volatile float current_temp = 0;
+				float adc_voltage = readADC(CHANNEL_2) * 3.3f / 65536; //convert from ADC reading to temperature
+        current_temp = 25 - (adc_voltage - 716)/1620;
+				current_temp = 0;
+				/*
+				volatile uint16_t adc_reading = 0;
+				adc_reading = readADC(CHANNEL_2);
+				adc_reading = 0;
+				*/
+   }
+	
 /****************      ECEN 5803 add code as indicated   ***************/
 //	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 
@@ -351,7 +369,7 @@ int main()
 //		}	
 			
 			//While 1 loop to test frequency detection algorithm. Result: success, my_freq = 1800 Hz
-
+			/*
 			while(1){
 				volatile uint16_t my_freq = 0;
 				for (int i = 0; i < 2000; i++) {
@@ -360,6 +378,8 @@ int main()
 
 				my_freq = 0; //breakpoint here to peak at the frequency value in debugger...
 			}
-				
+			*/	
+			
+			
 }
 
