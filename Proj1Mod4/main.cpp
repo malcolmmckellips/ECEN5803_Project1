@@ -190,6 +190,7 @@ uint16_t readADC(uint8_t input_ch){
         //channel 0 (PTB0 -> ch30) VREFL
         case CHANNEL_0: 
             //Configure for channel 0 
+						SIM->SCGC6 |= SIM_SCGC6_ADC0_MASK;
             ADC0->SC1[0] = CH0_ADC_CH; //ch30 is input
             ADC0->CFG1   &= ~(NORMAL_POWER_CONFIG << CFG1_ADLPC); //We want to be in normal power mode (0) 
             ADC0->CFG1   &= ~(CLOCK_RATIO_1 << CFG1_ADIV); //We want ADIV clk selecct to 00 for divide ratio of 1
@@ -208,6 +209,7 @@ uint16_t readADC(uint8_t input_ch){
         //channel 1 (PTB1 -> ch9) Virtual vortex frequency
         case CHANNEL_1:
             //configure for channel 1
+						SIM->SCGC6 |= SIM_SCGC6_ADC0_MASK;
             ADC0->SC1[0] = CH1_ADC_CH; //ch30 is input
             ADC0->CFG1   &= ~(NORMAL_POWER_CONFIG << CFG1_ADLPC); //We want to be in normal power mode (0) 
             ADC0->CFG1   &= ~(CLOCK_RATIO_1 << CFG1_ADIV); //We want ADIV clk selecct to 00 for divide ratio of 1
