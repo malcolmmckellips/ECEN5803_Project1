@@ -430,7 +430,7 @@
             
               mbed/TARGET_KL25Z/TOOLCHAIN_ARM_STD/mbed.ar
             
-            </Misc>
+</Misc>
             <LinkerInputFile></LinkerInputFile>
             <DisabledWarnings></DisabledWarnings>
           </LDads>

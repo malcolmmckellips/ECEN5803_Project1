@@ -31,10 +31,8 @@
  *  This is how you describe the return value
  * 
  */
-__asm int my_sqrt(int x){
+__asm unsigned int my_sqrt(unsigned int x){
 	
-	//Write your code here
-		//Write your code here
 //	done = 0
 //	a = 0
 //	b = square root of largest possible argument (e.g. ~216).
@@ -60,17 +58,16 @@ __asm int my_sqrt(int x){
 	//r5 = c_old
 	//r6 = c * c 
 	
-		MOVS	r1, #0; // done = 0
-		MOVS 	r2, #0; // a = 0
-		
-		MOVS	r3, #1; 			// r3 = 1
-		LSLS r3, r3, #16 ; // r3 = r3 << 16			(b = 2^16)
-		
-		MOVS r4, #0; 			//c = 0 
-		SUBS r4, r4, #1; 	//c = -1
+		MOVS	r1, #0;				// done = 0
+		MOVS 	r2, #0;				// a = 0
+		MOVS	r3, #0xFF; 			// r3 = 1
+  	LSLS  r3, r3, #8;  // r3 = r3 << 16			(b = 2^16)
+		ADDS  r3, r3, #0xFF
+		MOVS r4, #0; 				//c = 0 
+		SUBS r4, r4, #1; 		//c = -1
 		
 dowhile
-			MOVS r5, r4; //		c_old <- c
+			MOVS r5, r4;		 //		c_old <- c
 			
 			ADDS r4, r2, r3; // c = a + b
 			ASRS r4, r4, #1; // c = (a + b) / 2
@@ -79,8 +76,8 @@ dowhile
 			MULS r6, r6, r6;  // r6 = c*c 
 			CMP	 r6, r0;			// Comparing on (c^2 - x) 
 			
-			BNE notx; 		// if (c*c != X) -> notdone 
-			MOVS r1, #1; //done = 1 
+			BNE notx; 		   // if (c*c != X) -> notdone 
+			MOVS r1, #1;     // done = 1 
 			B whilecond;	//don't need to check other if statements (if, else)
 notx
 			BGT cintob;			// if (c*c > x put c in b )
@@ -106,8 +103,8 @@ donewithloop
 		//MOVS r3, #46341; // b = sqrt (2^31 - 1) //(or 2^16?) 
 		//MOVS r4, #-1; 
 		
-		MOVS r0, r4; //??? maybe r0 is the return value? 
-		
+		MOVS r0, r4; //load c into r0 for returning to C code		
+
 		BX lr; //return
 //}
 }
@@ -121,17 +118,24 @@ donewithloop
  * Detailed description of the main
  */
 int main(void){
-	volatile int r, j=0;
-	int i;                  
-  r = my_sqrt(0);     // should be 0
-  r = my_sqrt(25);    // should be 5
-	r = my_sqrt(133); 	// should be 11
+
+	volatile unsigned int r, j=0;
+	unsigned int i;    
+	
+  r = my_sqrt(2);    
+  r = my_sqrt(4);    
+	r = my_sqrt(22); 	
+	r = my_sqrt(121); 	
+//	r = my_sqrt(4294836225); 	//Testing largest value
+	
   for (i=0; i<10000; i++){
 		r = my_sqrt(i);
     j+=r;
   }
+	
 	while(1)
 		;
 }
 
 // *******************************ARM University Program Copyright © ARM Ltd 2014*************************************/
+
