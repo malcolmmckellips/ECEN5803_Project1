@@ -1,3 +1,11 @@
+/************************************************************************//**
+* \file main.cpp
+* \brief Module 2 : Feel the vibrations
+*
+* Control an RGB LED with accelerometer and touch sensor input to become familiar with mbed
+*
+****************************************************************************/
+
 #include "mbed.h"
 #include "MMA8451Q.h"
 #include "TSISensor.h"
@@ -6,6 +14,15 @@
 
 Timer t;
 float timeSpent;
+ 
+ /**
+ * @brief Main function to excersize mbed PwmOut component
+ *
+ * This function will enable a FRDM board to change the RGB LED color based on accelerometer position. 
+ * It will also change the brightness of the LED based on touch sensor input. 
+ *
+ * 
+ */
  
 int main(void) {
     MMA8451Q acc(PTE25, PTE24, MMA8451_I2C_ADDRESS);
