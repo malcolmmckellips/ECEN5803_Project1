@@ -17,18 +17,15 @@
  /** @endcond */
  
  /**
- * @brief 5863 Write a brief description of the function here
+ * @brief Custom assembly language square root function
  *
- * Detailed description of the function after one line gap
+ * This function performs bisection method to achieve a high-speed square root approximation in assembly. 
  *
- * @note You can also add a note this way
- *
- * @param[in] 
- *  You can also start writing on a new line. 
- *  And continue on the next line. This is how you describe an input parameter
+ * @param[in] x
+ *  The unsigned integer to return the square root of
  *
  * @return
- *  This is how you describe the return value
+ *  The approximated square root of x
  * 
  */
 __asm unsigned int my_sqrt(unsigned int x){
@@ -115,7 +112,7 @@ donewithloop
  /**
  * @brief Main function
  *
- * Detailed description of the main
+ * This function excersizes the custom assembly square root function "my_sqrt"
  */
 int main(void){
 
