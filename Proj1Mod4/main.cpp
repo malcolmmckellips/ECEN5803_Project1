@@ -99,6 +99,92 @@ DigitalOut redLED(LED_RED,1);
 DigitalOut blueLED(LED_BLUE,1);
 
 Serial pc(USBTX, USBRX);     
+
+
+//Square root assembly code from Module 1
+
+__asm unsigned int my_sqrt(unsigned int x){
+	
+//	done = 0
+//	a = 0
+//	b = square root of largest possible argument (e.g. ~216).
+//	c = -1
+//	do {
+//		c_old <- c
+//		c <- (a+b)/2
+//		if (c*c == x) {
+//			done = 1
+//		} else if (c*c < x) {
+//			a <- c
+//		} else {
+//			b <- c
+//	}
+//	} while (!done) && (c != c_old)
+//	return c 
+	
+	//r0 <- x
+	//r1 = done
+	//r2 = a
+	//r3 = b
+	//r4 = c
+	//r5 = c_old
+	//r6 = c * c 
+	
+		MOVS	r1, #0;				// done = 0
+		MOVS 	r2, #0;				// a = 0
+		MOVS	r3, #0xFF; 			// r3 = 1
+  	LSLS  r3, r3, #8;  // r3 = r3 << 16			(b = 2^16)
+		ADDS  r3, r3, #0xFF
+		MOVS r4, #0; 				//c = 0 
+		SUBS r4, r4, #1; 		//c = -1
+		
+dowhile
+			MOVS r5, r4;		 //		c_old <- c
+			
+			ADDS r4, r2, r3; // c = a + b
+			ASRS r4, r4, #1; // c = (a + b) / 2
+			
+			MOVS r6, r4; 			// r6 = c
+			MULS r6, r6, r6;  // r6 = c*c 
+			CMP	 r6, r0;			// Comparing on (c^2 - x) 
+			
+			BNE notx; 		   // if (c*c != X) -> notdone 
+			MOVS r1, #1;     // done = 1 
+			B whilecond;	//don't need to check other if statements (if, else)
+notx
+			BGT cintob;			// if (c*c > x put c in b )
+			
+			MOVS r2, r4; 		// if (c * c < x put c into a )
+			B whilecond; 
+			
+cintob
+				MOVS r3, r4; // b <- c 
+			
+			//check while conditions 
+whilecond 
+				CMP r1, #0; // compare r1 == 0 
+				BNE donewithloop ; // if (done != 0) -> end while loop 
+			
+				CMP r4, r5; //
+				BEQ donewithloop;  //if (c == c_old) -> end while loop
+			
+				B	dowhile; 	//continue while loop if conditions are satisfied 
+				
+donewithloop
+		
+		MOVS r0, r4; //load c into r0 for returning to C code		
+
+		BX lr; //return
+
+}
+
+float square(float num){
+	
+	float result = num * num;
+	
+	return result;
+	
+}
  
 void flip()  
 {                
@@ -251,7 +337,7 @@ volatile static uint16_t peaks = 0;
 volatile static float flow_frequency = 0; 
 	
 uint16_t calculate_frequency(){
-	uint16_t new_sample = freq_data[freq_index]; //eventually, this will be freq_data[freq_index] + noise (aka adcREAD(CHANNEL_1))
+	uint16_t new_sample = freq_data[freq_index] + readADC(CHANNEL_1) - 45000; //eventually, this will be freq_data[freq_index] + noise (aka adcREAD(CHANNEL_1))
 	
 	//We are going from pos to neg (aka crossing neg threshold and having a negative peak)
 	if ((positive) && (new_sample < neg_threshold)){
@@ -283,44 +369,111 @@ uint16_t calculate_frequency(){
 float calculate_flow(uint16_t freq, float temp){
 	float flow = 0;
 	float PID  = 2.9; //inner pipe diameter = 2.9 inches
-	float d 	 = 0.5; //bluff body width=d of 0.5 inches
+	float d = 0.5; //bluff body width=d of 0.5 inches
 	
+	float vis = (.000024)*pow(10,(247.8/(temp+273.15-140.0)));
+	float rho = 1000*(1-(((temp+288.9414)/(508929.2*(temp+68.12963)))*square(temp-3.9863)));
 	
-	//unit conversions and flow eqns here 
+	float k1 = 0.2684;
+	float k2 = 1.0356;
 	
-	return flow;
+	float c1 = 1.0356/sqrt(rho*(.0254*PID))/vis;
+	
+	float velocity = 0;
+	
+	float result = 0;
+	bool goodResult = false;
+	
+	//Numerical approximation of velocity using rearranged v=fd/St formula
+	for(float i = 0.01;i<7;i+=.01){
+		
+		result = (square(i)*k1)-((k2/c1)*(float)sqrt(i))-(freq*(d*.0254)*i);
+		
+		if((result<1)&&(result>0)){
+			velocity=i;
+			goodResult = true;
+			break;
+		}
+	}
+	
+	if(goodResult){
+		
+		velocity = velocity/.0254;
+		flow = velocity*2.45*square(PID);
+		
+		return flow;
+		
+	}
+	else{
+		//0 returned if good velocity value not found
+		return 0;
+	}
+	
+}
+
+float getTemp(){
+
+		//Calculate temperature from Fig. 28-63
+	
+		float temp;
+		float adc_voltage = readADC(CHANNEL_2) * 3.3f / 65536; //convert from ADC reading to temperature
+    temp = 25 - (adc_voltage - 716)/1620;
+	
+		return temp;
+	
 }
 
 int main() 
 {
-	
-	//To test ADC: 
-	
+	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 	calibrateADC();
 	
+    uint32_t  count = 0;   
+	
+	volatile uint16_t vortexValraw;
+	
+	volatile float currentTemp, vortexValVoltage = 0;
+	volatile uint16_t currentFreq;
+	
+	volatile float flow;
+	
 	while (1) {
-        //Calculate temperature from Fig. 28-63
-				volatile float current_temp = 0;
-				float adc_voltage = readADC(CHANNEL_2) * 3.3f / 65536; //convert from ADC reading to temperature
-        current_temp = 25 - (adc_voltage - 716)/1620;
-				current_temp = 0;
-				/*
-				volatile uint16_t adc_reading = 0;
-				adc_reading = readADC(CHANNEL_2);
-				adc_reading = 0;
-				*/
+		
+		count++;               // counts the number of times through the loop
+		
+		if(LED_heartbeatFlag)
+		{
+			
+			redLED = !redLED;
+			LED_heartbeatFlag=0;
+			
+		}
+		
+		// if ((SwTimerIsrCounter & 0x1FFF) > 0x0FFF)
+		// {
+           // flip();  // Toggle Green LED
+       	// }	
+		
+		// vortexValraw = readADC(CHANNEL_1);
+		// vortexValVoltage = (readADC(CHANNEL_1)) * 3.3f / 65536;
+		
+		// currentFreq = calculate_frequency();
+		// currentTemp = getTemp();
+		
+		// flow = calculate_flow(currentFreq,currentTemp);
+
    }
 	
 /****************      ECEN 5803 add code as indicated   ***************/
-//	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 
-//    uint32_t  count = 0;   
+
+
     
 // initialize serial buffer pointers
-//   rx_in_ptr =  rx_buf; /* pointer to the receive in data */
-//   rx_out_ptr = rx_buf; /* pointer to the receive out data*/
-//   tx_in_ptr =  tx_buf; /* pointer to the transmit in data*/
-//   tx_out_ptr = tx_buf; /* pointer to the transmit out */
+  // rx_in_ptr =  rx_buf; /* pointer to the receive in data */
+  // rx_out_ptr = rx_buf; /* pointer to the receive out data*/
+  // tx_in_ptr =  tx_buf; /* pointer to the transmit in data*/
+  // tx_out_ptr = tx_buf; /* pointer to the transmit out */
 //    
 //   
 //  // Print the initial banner
@@ -343,7 +496,7 @@ int main()
 //    while(1)       /// Cyclical Executive Loop
 //    {
 
-//        count++;               // counts the number of times through the loop
+
 ////     __enable_interrupts();
 ////     __clear_watchdog_timer();
 
@@ -355,20 +508,7 @@ int main()
 //        monitor();           // Sends serial port output messages depending
 //                         //     on commands received and display mode
 
-//		if(LED_heartbeatFlag)
-//		{
-//			
-//			redLED = !redLED;
-//			LED_heartbeatFlag=0;
-//			
-//		}
 
-//        if ((SwTimerIsrCounter & 0x1FFF) > 0x0FFF)
-//   
-//        {
-//            flip();  // Toggle Green LED
-//        }
-//		}	
 			
 			//While 1 loop to test frequency detection algorithm. Result: success, my_freq = 1800 Hz
 			/*
