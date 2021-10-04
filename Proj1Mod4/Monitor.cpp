@@ -31,150 +31,6 @@
 #include <stdio.h>
 #include "shared.h"
 
-//Function for outputting register 0 value 
-__asm uint32_t returnReg0(void){
-	
-	BX	LR;
-	
-}
-
-//Function for outputting register 1 value 
-__asm uint32_t returnReg1(void){
-	
-	MOVS	r0,r1;
-	BX		LR;
-	
-}
-
-//Function for outputting register 2 value 
-__asm uint32_t returnReg2(void){
-	
-	MOVS	r0,r2;
-	BX		LR;
-	
-}
-
-//Function for outputting register 3 value 
-__asm uint32_t returnReg3(void){
-	
-	MOVS	r0,r3;
-	BX		LR;
-	
-}
-
-//Function for outputting register 4 value 
-__asm uint32_t returnReg4(void){
-	
-	MOVS	r0,r4;
-	BX		LR;
-	
-}
-
-//Function for outputting register 5 value 
-__asm uint32_t returnReg5(void){
-	
-	MOVS	r0,r5;
-	BX		LR;
-	
-}
-
-//Function for outputting register 6 value 
-__asm uint32_t returnReg6(void){
-	
-	MOVS	r0,r6;
-	BX		LR;
-	
-}
-
-//Function for outputting register 7 value 
-__asm uint32_t returnReg7(void){
-	
-	MOVS	r0,r7;
-	BX		LR;
-	
-}
-
-//Function for outputting register 8 value 
-__asm uint32_t returnReg8(void){
-	
-	MOV	r0,r8;
-	BX		LR;
-	
-}
-
-//Function for outputting register 9 value 
-__asm uint32_t returnReg9(void){
-	
-	MOV	r0,r9;
-	BX		LR;
-	
-}
-
-//Function for outputting register 10 value 
-__asm uint32_t returnReg10(void){
-	
-	MOV	r0,r10;
-	BX		LR;
-	
-}
-
-//Function for outputting register 11 value 
-__asm uint32_t returnReg11(void){
-	
-	MOV	r0,r11;
-	BX		LR;
-	
-}
-
-//Function for outputting register 12 value 
-__asm uint32_t returnReg12(void){
-	
-	MOV	r0,r12;
-	BX		LR;
-	
-}
-
-//Function for outputting register 13 value 
-__asm uint32_t returnReg13(void){
-	
-	MOV	r0,r13;
-	BX		LR;
-	
-}
-
-//Function for outputting register 14 value 
-__asm uint32_t returnReg14(void){
-	
-	MOV	r0,r14;
-	BX		LR;
-	
-}
-
-//Function for outputting register 15 value 
-__asm uint32_t returnReg15(void){
-	
-	MOV	r0,r15;
-	BX		LR;
-	
-}
-
-__asm uint32_t loadOneFromStack(uint32_t stackOffset,uint32_t stackBase){
-	
-	ADD	r0, r0, SP //Store sum of offset from SP in r0
-	
-	CMP r0, r1
-	
-	BGE AtStackBase
-	
-	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
-	// MOVS r1, #0
-	
-	BX LR
-	
-AtStackBase	
-	MOVS r0, #0
-	BX	LR
-}
 
 __asm uint32_t loadFromMem(uint32_t address){
 	
@@ -199,67 +55,6 @@ void cutUpNSendWord(uint32_t myWord){
 	
 }
 
-void displayRegisters(void){
-	
-				UART_direct_msg_put("\r\nReg 0: ");			
-				cutUpNSendWord(returnReg0());
-				UART_direct_msg_put("Reg 1: ");		
-				cutUpNSendWord(returnReg1());
-				UART_direct_msg_put("Reg 2: ");		
-				cutUpNSendWord(returnReg1());
-				UART_direct_msg_put("Reg 3: ");		
-				cutUpNSendWord(returnReg3());
-				UART_direct_msg_put("Reg 4: ");		
-				cutUpNSendWord(returnReg4());
-				UART_direct_msg_put("Reg 5: ");		
-				cutUpNSendWord(returnReg5());
-				UART_direct_msg_put("Reg 6: ");		
-				cutUpNSendWord(returnReg6());
-				UART_direct_msg_put("Reg 7: ");		
-				cutUpNSendWord(returnReg7());
-				UART_direct_msg_put("Reg 8: ");		
-				cutUpNSendWord(returnReg8());
-				UART_direct_msg_put("Reg 9: ");		
-				cutUpNSendWord(returnReg9());
-				UART_direct_msg_put("Reg 10: ");		
-				cutUpNSendWord(returnReg10());
-				UART_direct_msg_put("Reg 11: ");		
-				cutUpNSendWord(returnReg11());
-				UART_direct_msg_put("Reg 12: ");		
-				cutUpNSendWord(returnReg12());
-				UART_direct_msg_put("Reg 13: ");		
-				cutUpNSendWord(returnReg13());
-				UART_direct_msg_put("Reg 14: ");		
-				cutUpNSendWord(returnReg14());
-				UART_direct_msg_put("Reg 15: ");		
-				cutUpNSendWord(returnReg15());
-	
-}
-
-void	displayStackSixteen(void){
-	
-		UART_msg_put("\r\n");
-		
-		char stackPtrMsg[20];	
-	
-		for(int i=0;i<16;i++){
-			sprintf(stackPtrMsg,"SP + %d: ",(i*4));
-			UART_direct_msg_put(stackPtrMsg);
-			cutUpNSendWord(loadOneFromStack(i*4,INITIAL_SP));
-		
-		}
-}
-
-void	displayMemSect(uint32_t baseAddress){
-	
-	char displayMemMsg[20];
-	sprintf(displayMemMsg,"\r\nContents of 0x%x: \r\n",baseAddress);
-	UART_direct_msg_put(displayMemMsg);
-	
-	uint32_t data = loadFromMem(baseAddress);
-	cutUpNSendWord(data);
-	
-}
 
 /*******************************************************************************
 * Set Display Mode Function
@@ -286,9 +81,6 @@ void set_display_mode(void)
   UART_direct_msg_put("\r\n Hit QUI - Quiet");
   UART_direct_msg_put("\r\n Hit DEB - Debug" );
   UART_direct_msg_put("\r\n Hit V - Version#\r\n");
-  UART_direct_msg_put("\r\n Hit S - Display the last 16 words from the Stack\r\n");
-  UART_direct_msg_put("\r\n Hit R - Display the contents of all the registers\r\n");
-	UART_direct_msg_put("\r\n Hit M then enter a 32-bit word-aligned HEX address - Display a word from memory\r\n");
   UART_direct_msg_put("\r\nSelect:  ");
   
 }
@@ -335,9 +127,7 @@ void chk_UART_msg(void)
          }
          else if ((display_mode == QUIET) && (msg_buf[0] != 0x02) && 
                   (msg_buf[0] != 'D') && (msg_buf[0] != 'N') && 
-                  (msg_buf[0] != 'V') && (msg_buf[0] != 'M') && 
-				  (msg_buf[0] != 'S') && (msg_buf[0] != 'R') &&
-                  (msg_buf_idx != 0))
+                  (msg_buf[0] != 'V') && (msg_buf_idx != 0))
          {                          // if first character is bad in Quiet mode
             msg_buf_idx = 0;        // then start over
          }
@@ -410,48 +200,7 @@ void UART_msg_process(void)
             display_timer = 0;
             break;
 			
-			
-		case 'R':
-            display_mode = REGISTERS;
-            UART_msg_put("\r\n");
-			
-            displayRegisters();
-			
-            UART_msg_put("\r\nSelect  ");
-            display_timer = 0;
-            break;	
-                
-		case 'S':
-            display_mode = STACK;
-            UART_msg_put("\r\n");
-			
-            displayStackSixteen();
-			
-            UART_msg_put("\r\nSelect  ");
-            display_timer = 0;
-            break;
-		case 'M':
-			display_mode = MEMORY;
-			UART_msg_put("\r\n");
-			
-			uint32_t addressDesired=0;
-			
-			for(int i = 1;i<9;i++){
-				
-				addressDesired += (((uint32_t)(asc_to_hex(msg_buf[i])))<<((8-i)*4));
-//				UART_direct_msg_put("\r\nSelect  ");
-			}
-			
-			if( (addressDesired%4)==0 ){
-			
-				displayMemSect(addressDesired);
-			
-				UART_direct_msg_put("\r\nSelect  ");   
-  
-			}
-			else{
-				UART_direct_msg_put("\r\n Address must be word-aligned (divisible by 4)\r\n");
-			}
+
 			display_timer = 0;
 			break;
 			
@@ -560,58 +309,6 @@ void monitor(void)
 
                //  add flow data output here, use UART_hex_put or similar for 
                // numbers
-               
-               
- /****************      ECEN 5803 add code as indicated   ***************/             
-               //  Create a display of  error counts, sensor states, and
-               //  ARM Registers R0-R15
-				// UART_direct_msg_put("\r\nReg 0: ");			
-				// cutUpNSendWord(returnReg0());
-				// UART_direct_msg_put("Reg 1: ");		
-				// cutUpNSendWord(returnReg1());
-				// UART_direct_msg_put("Reg 2: ");		
-				// cutUpNSendWord(returnReg1());
-				// UART_direct_msg_put("Reg 3: ");		
-				// cutUpNSendWord(returnReg3());
-				// UART_direct_msg_put("Reg 4: ");		
-				// cutUpNSendWord(returnReg4());
-				// UART_direct_msg_put("Reg 5: ");		
-				// cutUpNSendWord(returnReg5());
-				// UART_direct_msg_put("Reg 6: ");		
-				// cutUpNSendWord(returnReg6());
-				// UART_direct_msg_put("Reg 7: ");		
-				// cutUpNSendWord(returnReg7());
-				// UART_direct_msg_put("Reg 8: ");		
-				// cutUpNSendWord(returnReg8());
-				// UART_direct_msg_put("Reg 9: ");		
-				// cutUpNSendWord(returnReg9());
-				// UART_direct_msg_put("Reg 10: ");		
-				// cutUpNSendWord(returnReg10());
-				// UART_direct_msg_put("Reg 11: ");		
-				// cutUpNSendWord(returnReg11());
-				// UART_direct_msg_put("Reg 12: ");		
-				// cutUpNSendWord(returnReg12());
-				// UART_direct_msg_put("Reg 13: ");		
-				// cutUpNSendWord(returnReg13());
-				// UART_direct_msg_put("Reg 14: ");		
-				// cutUpNSendWord(returnReg14());
-				// UART_direct_msg_put("Reg 15: ");		
-				// cutUpNSendWord(returnReg15());
-							
-               //  Create a command to read a section of Memory and display it
-               
-               //  Create a command to read 16 words from the current stack 
-               // and display it in reverse chronological order.
-				//UART_direct_msg_put("\r\n");
-				
-				// for(int i=0;i<16;i++){
-					// sprintf(stackPtrMsg,"SP + %d: ",(i*4));
-					// UART_direct_msg_put(stackPtrMsg);
-					// cutUpNSendWord(loadOneFromStack(i*4,INITIAL_SP));
-					
-				// }
-				
-				
 			  
 			  
                // clear flag to ISR      
@@ -619,23 +316,6 @@ void monitor(void)
              }   
          } 
          break;
-		case(REGISTERS):
-		{
-			display_flag = 0;
-		}
-		 break;
-		
-		case(STACK):
-		{
-			display_flag = 0;
-		}
-		 break;
-		
-		case(MEMORY):
-		{
-			display_flag = 0;
-		}
-		 break;
       default:
       {
          UART_msg_put("Mode Error");

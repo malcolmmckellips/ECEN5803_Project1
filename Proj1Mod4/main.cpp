@@ -103,80 +103,80 @@ Serial pc(USBTX, USBRX);
 
 //Square root assembly code from Module 1
 
-__asm unsigned int my_sqrt(unsigned int x){
-	
-//	done = 0
-//	a = 0
-//	b = square root of largest possible argument (e.g. ~216).
-//	c = -1
-//	do {
-//		c_old <- c
-//		c <- (a+b)/2
-//		if (c*c == x) {
-//			done = 1
-//		} else if (c*c < x) {
-//			a <- c
-//		} else {
-//			b <- c
-//	}
-//	} while (!done) && (c != c_old)
-//	return c 
-	
-	//r0 <- x
-	//r1 = done
-	//r2 = a
-	//r3 = b
-	//r4 = c
-	//r5 = c_old
-	//r6 = c * c 
-	
-		MOVS	r1, #0;				// done = 0
-		MOVS 	r2, #0;				// a = 0
-		MOVS	r3, #0xFF; 			// r3 = 1
-  	LSLS  r3, r3, #8;  // r3 = r3 << 16			(b = 2^16)
-		ADDS  r3, r3, #0xFF
-		MOVS r4, #0; 				//c = 0 
-		SUBS r4, r4, #1; 		//c = -1
-		
-dowhile
-			MOVS r5, r4;		 //		c_old <- c
-			
-			ADDS r4, r2, r3; // c = a + b
-			ASRS r4, r4, #1; // c = (a + b) / 2
-			
-			MOVS r6, r4; 			// r6 = c
-			MULS r6, r6, r6;  // r6 = c*c 
-			CMP	 r6, r0;			// Comparing on (c^2 - x) 
-			
-			BNE notx; 		   // if (c*c != X) -> notdone 
-			MOVS r1, #1;     // done = 1 
-			B whilecond;	//don't need to check other if statements (if, else)
-notx
-			BGT cintob;			// if (c*c > x put c in b )
-			
-			MOVS r2, r4; 		// if (c * c < x put c into a )
-			B whilecond; 
-			
-cintob
-				MOVS r3, r4; // b <- c 
-			
-			//check while conditions 
-whilecond 
-				CMP r1, #0; // compare r1 == 0 
-				BNE donewithloop ; // if (done != 0) -> end while loop 
-			
-				CMP r4, r5; //
-				BEQ donewithloop;  //if (c == c_old) -> end while loop
-			
-				B	dowhile; 	//continue while loop if conditions are satisfied 
-				
-donewithloop
-		
-		MOVS r0, r4; //load c into r0 for returning to C code		
+//__asm unsigned int my_sqrt(unsigned int x){
+//	
+////	done = 0
+////	a = 0
+////	b = square root of largest possible argument (e.g. ~216).
+////	c = -1
+////	do {
+////		c_old <- c
+////		c <- (a+b)/2
+////		if (c*c == x) {
+////			done = 1
+////		} else if (c*c < x) {
+////			a <- c
+////		} else {
+////			b <- c
+////	}
+////	} while (!done) && (c != c_old)
+////	return c 
+//	
+//	//r0 <- x
+//	//r1 = done
+//	//r2 = a
+//	//r3 = b
+//	//r4 = c
+//	//r5 = c_old
+//	//r6 = c * c 
+//	
+//		MOVS	r1, #0;				// done = 0
+//		MOVS 	r2, #0;				// a = 0
+//		MOVS	r3, #0xFF; 			// r3 = 1
+//  	LSLS  r3, r3, #8;  // r3 = r3 << 16			(b = 2^16)
+//		ADDS  r3, r3, #0xFF
+//		MOVS r4, #0; 				//c = 0 
+//		SUBS r4, r4, #1; 		//c = -1
+//		
+//dowhile
+//			MOVS r5, r4;		 //		c_old <- c
+//			
+//			ADDS r4, r2, r3; // c = a + b
+//			ASRS r4, r4, #1; // c = (a + b) / 2
+//			
+//			MOVS r6, r4; 			// r6 = c
+//			MULS r6, r6, r6;  // r6 = c*c 
+//			CMP	 r6, r0;			// Comparing on (c^2 - x) 
+//			
+//			BNE notx; 		   // if (c*c != X) -> notdone 
+//			MOVS r1, #1;     // done = 1 
+//			B whilecond;	//don't need to check other if statements (if, else)
+//notx
+//			BGT cintob;			// if (c*c > x put c in b )
+//			
+//			MOVS r2, r4; 		// if (c * c < x put c into a )
+//			B whilecond; 
+//			
+//cintob
+//				MOVS r3, r4; // b <- c 
+//			
+//			//check while conditions 
+//whilecond 
+//				CMP r1, #0; // compare r1 == 0 
+//				BNE donewithloop ; // if (done != 0) -> end while loop 
+//			
+//				CMP r4, r5; //
+//				BEQ donewithloop;  //if (c == c_old) -> end while loop
+//			
+//				B	dowhile; 	//continue while loop if conditions are satisfied 
+//				
+//donewithloop
+//		
+//		MOVS r0, r4; //load c into r0 for returning to C code		
 
-		BX lr; //return
+//		BX lr; //return
 
-}
+//}
 
 float square(float num){
 	
@@ -186,11 +186,6 @@ float square(float num){
 	
 }
  
-void flip()  
-{                
-    greenLED = !greenLED;
-}
-
 __asm uint32_t MyloadFromMem(uint32_t address){
 	
 	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
@@ -377,7 +372,7 @@ float calculate_flow(uint16_t freq, float temp){
 	float k1 = 0.2684;
 	float k2 = 1.0356;
 	
-	float c1 = 1.0356/sqrt(rho*(.0254*PID))/vis;
+	float c1 = sqrt((rho*(.0254*PID))/vis);
 	
 	float velocity = 0;
 	
@@ -385,7 +380,7 @@ float calculate_flow(uint16_t freq, float temp){
 	bool goodResult = false;
 	
 	//Numerical approximation of velocity using rearranged v=fd/St formula
-	for(float i = 0.01;i<7;i+=.01){
+	for(float i = 0.1;i<7;i+=.1){
 		
 		result = (square(i)*k1)-((k2/c1)*(float)sqrt(i))-(freq*(d*.0254)*i);
 		
@@ -406,7 +401,7 @@ float calculate_flow(uint16_t freq, float temp){
 	}
 	else{
 		//0 returned if good velocity value not found
-		return 0;
+		return 69;
 	}
 	
 }
@@ -417,7 +412,7 @@ float getTemp(){
 	
 		float temp;
 		float adc_voltage = readADC(CHANNEL_2) * 3.3f / 65536; //convert from ADC reading to temperature
-    temp = 25 - (adc_voltage - 716)/1620;
+		temp = 25 - (adc_voltage - 716)/1620;
 	
 		return temp;
 	
@@ -425,14 +420,11 @@ float getTemp(){
 
 int main() 
 {
-	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
+	// tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 	calibrateADC();
 	
-    uint32_t  count = 0;   
+  uint32_t  count = 0;   
 	
-	volatile uint16_t vortexValraw;
-	
-	volatile float currentTemp, vortexValVoltage = 0;
 	volatile uint16_t currentFreq;
 	
 	volatile float flow;
@@ -441,13 +433,24 @@ int main()
 		
 		count++;               // counts the number of times through the loop
 		
-		if(LED_heartbeatFlag)
-		{
+		// if((SwTimerIsrCounter& 0x0001)>0){
 			
-			redLED = !redLED;
-			LED_heartbeatFlag=0;
+			// currentFreq = calculate_frequency();
 			
-		}
+		// }
+		
+		// if(LED_heartbeatFlag){
+			
+			// redLED = !redLED;
+			// LED_heartbeatFlag = 0;
+			
+		// }
+		
+		// if(getFrequencyFlag)
+		// {
+			flow = calculate_flow(currentFreq,getTemp());
+			getFrequencyFlag = 0;
+		// }
 		
 		// if ((SwTimerIsrCounter & 0x1FFF) > 0x0FFF)
 		// {

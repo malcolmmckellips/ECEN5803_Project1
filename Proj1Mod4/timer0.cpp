@@ -106,8 +106,10 @@ extern "C" {
                                                   // 119 hours at 100 us period
    static   uint16_t timer0_count = 0; // 16 bits, counts for 
                                           // 6.5 seconds at 100 us period     
-										  
-   static   UCHAR LED_heartbeat = 79;  
+
+   static   UCHAR getFrequencyCount = 16;  
+   UCHAR getFrequencyFlag = 0;     
+   static   UCHAR LED_heartbeatCount = 16;  
    UCHAR LED_heartbeatFlag = 0;  
 	 
 	 static   UCHAR timer_state = 0;   
@@ -258,19 +260,21 @@ void timer0(void)
 
 //    B. Heartbeat/ LED outputs
 //   Generate Outputs  ************************************
- 
-    //ECEN 5803 add code as indicated
-    // Create an 0.5 second RED LED heartbeat here.
 
-		LED_heartbeat--;
-			
-		if(LED_heartbeat==0)
-		{
-				LED_heartbeatFlag=1;
-				LED_heartbeat=79;
+		LED_heartbeatCount--;
+		
+		if(LED_heartbeatCount==0){
+			LED_heartbeatFlag = 1;
+			LED_heartbeatCount = 79;
 		}
-	
- 
+
+		getFrequencyCount--;
+			
+		if(getFrequencyCount==0)
+		{
+				getFrequencyFlag=1;
+				getFrequencyCount=16;
+		}
  
 
    }   // end 6.4 ms group B

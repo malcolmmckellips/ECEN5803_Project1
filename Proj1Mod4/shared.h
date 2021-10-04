@@ -52,7 +52,7 @@
 #define COPYRIGHT "Copyright (c) University of Colorado" 
      
  enum boolean { FALSE, TRUE };           /// \enum boolean  
- enum dmode {QUIET, NORMAL, DEBUG, VERSION, REGISTERS, STACK, MEMORY}; 
+ enum dmode {QUIET, NORMAL, DEBUG, VERSION}; 
  
  typedef unsigned char UCHAR;       
  typedef unsigned char bit;
@@ -66,7 +66,8 @@ extern "C" {
 /************************************************************************/
 /*             Global Variable declarations                             */
 /************************************************************************/
- 
+
+ extern UCHAR getFrequencyFlag;
  extern UCHAR LED_heartbeatFlag;
  
  extern unsigned char Error_status;          // Variable for debugging use

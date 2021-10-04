@@ -8,7 +8,7 @@ Copyright (C) 2021 ARM Ltd and ARM Germany GmbH. All rights reserved.
 License Information: Erich ercl9347@colorado.edu, CU Boulder, LIC=----
  
 Tool Versions:
-Toolchain:       MDK-Lite  Version: 5.35.0.2
+Toolchain:       MDK-ARM Professional  Version: 5.35.0.2
 Toolchain Path:  C:\Keil_v5\ARM\ARMCC\Bin
 C Compiler:      Armcc.exe V5.06 update 7 (build 960)
 Assembler:       Armasm.exe V5.06 update 7 (build 960)
@@ -27,22 +27,19 @@ Project File Date:  10/02/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'Proj1Mod3'
+compiling UART_poll.cpp...
 compiling timer0.cpp...
 compiling Monitor.cpp...
-Monitor.cpp(370): warning:  #546-D: transfer of control bypasses initialization of:
-            variable "addressDesired"  (declared at line 437)
-        switch( chr ) 
-        ^
-Monitor.cpp(156): warning: A1609W: MOV <rd>,pc instruction does not set bit zero, so does not create a return address
+Monitor.cpp(204): warning:  #111-D: statement is unreachable
+  			display_timer = 0;
 Monitor.cpp: 1 warning, 0 errors
-compiling UART_poll.cpp...
 compiling main.cpp...
 linking...
 .\BUILD\Proj1Mod3.axf: Warning: L6320W: Ignoring --keep command. Cannot find argument 'os_cb_sections'.
-Program Size: Code=27372 RO-data=4832 RW-data=156 ZI-data=604  
+Program Size: Code=27024 RO-data=2836 RW-data=180 ZI-data=604  
 Finished: 0 information, 1 warning and 0 error messages.
 FromELF: creating hex file...
-".\BUILD\Proj1Mod3.axf" - 0 Error(s), 3 Warning(s).
+".\BUILD\Proj1Mod3.axf" - 0 Error(s), 2 Warning(s).
 
 <h2>Software Packages used:</h2>
 
