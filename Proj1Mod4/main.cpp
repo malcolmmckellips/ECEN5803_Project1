@@ -427,6 +427,17 @@ int main()
 	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 	calibrateADC();
 	
+	//Creating PWM outputs at PTE30 and PTE31
+	PwmOut flowSignal(PTE30);
+	PwmOut freqSignal(PTE31);
+	
+	//Setting pulsewidths to 0 ms. Pulsewidth duration
+	//will be set to length propotional in ms to 
+	//GPM for the flow signal and Hz for the frequency
+	//signal.
+	flowSignal.pulsewidth_ms(0);
+	freqSignal.pulsewidth_ms(0);
+	
 //	initialize serial buffer pointers
   rx_in_ptr =  rx_buf; /* pointer to the receive in data */
   rx_out_ptr = rx_buf; /* pointer to the receive out data*/
@@ -464,6 +475,10 @@ int main()
 			freqGlobal = (uint32_t)calculate_frequency();
 			tempGlobal = (uint32_t)getTemp();
 			
+			//Setting frequency PWM signal proportional to 
+			//measured frequency(ms/Hz)
+			freqSignal.pulsewidth_ms(freqGlobal);
+			
 		}
 		
 		if(LED_heartbeatFlag){
@@ -476,6 +491,11 @@ int main()
 		if(getFrequencyFlag)
 		{
 			flowGlobal = (uint32_t)calculate_flow(currentFreq,getTemp());
+			
+			//Setting frequency PWM signal proportional to 
+			//measured frequency(ms/Hz)
+			freqSignal.pulsewidth_ms(flowGlobal);
+			
 			getFrequencyFlag = 0;
 		}
 		
