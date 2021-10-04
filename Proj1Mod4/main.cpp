@@ -393,15 +393,15 @@ float calculate_flow(uint16_t freq, float temp){
 	
 	if(goodResult){
 		
-		velocity = velocity/.0254;
-		flow = velocity*2.45*square(PID);
+		velocity = velocity/(.0254*12);
+		flow = velocity*2.45*square(PID)*60; //Flow in Gallons/minute (GPM)
 		
 		return flow;
 		
 	}
 	else{
 		//0 returned if good velocity value not found
-		return 69;
+		return 0;
 	}
 	
 }
@@ -422,14 +422,29 @@ volatile uint32_t flowGlobal;
 volatile uint32_t tempGlobal;
 volatile uint32_t freqGlobal;
 
+Timer t;
+
 int main() 
 {
+	t.reset();
+	t.start();
+	timer0();
+	t.stop();
+	volatile float timeSpent = t.read();
+	
 	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 	calibrateADC();
 	
 	//Creating PWM outputs at PTE30 and PTE31
 	PwmOut flowSignal(PTE30);
 	PwmOut freqSignal(PTE31);
+	
+//	//Creating SPI master on PTC4-7
+//	//for interfacing with LCD display
+//	SPI LCD_SPI(PTC4,PTC5,PTC6,PTC7);
+//	char SPI_data[10];
+//	char SPI_reply[10];
+	
 	
 	//Setting pulsewidths to 0 ms. Pulsewidth duration
 	//will be set to length propotional in ms to 
@@ -457,10 +472,6 @@ int main()
   set_display_mode();          
 	
   uint32_t  count = 0;   
-	
-	volatile uint16_t currentFreq;
-	
-	//extern volatile float flow;
 	
 	while (1) {
 		
@@ -490,11 +501,11 @@ int main()
 		
 		if(getFrequencyFlag)
 		{
-			flowGlobal = (uint32_t)calculate_flow(currentFreq,getTemp());
+			flowGlobal = (uint32_t)calculate_flow(freqGlobal,getTemp());
 			
 			//Setting frequency PWM signal proportional to 
 			//measured frequency(ms/Hz)
-			freqSignal.pulsewidth_ms(flowGlobal);
+			flowSignal.pulsewidth_ms(flowGlobal);
 			
 			getFrequencyFlag = 0;
 		}

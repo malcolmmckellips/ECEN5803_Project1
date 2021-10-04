@@ -279,13 +279,13 @@ void monitor(void)
             if (display_flag == 1)
             {
                UART_direct_msg_put("\r\nNORMAL ");
-               UART_direct_msg_put(" Flow: 0x");
+               UART_direct_msg_put(" Flow (GPM): 0x");
                cutUpNSendWord(flowGlobal);
 			   
-               UART_direct_msg_put(" Temp: 0x");
+               UART_direct_msg_put(" Temp. (Celsius): 0x");
                cutUpNSendWord(tempGlobal);
 							
-               UART_direct_msg_put(" Freq: 0x");
+               UART_direct_msg_put(" Freq. (Hz): 0x");
 							cutUpNSendWord(freqGlobal);
 
                display_flag = 0;
@@ -297,14 +297,14 @@ void monitor(void)
             if (display_flag == 1)
             {
                UART_msg_put("\r\nDEBUG \0");
-               UART_direct_msg_put(" Flow: 0x");
+               UART_direct_msg_put(" Flow (GPM): 0x");
                cutUpNSendWord(flowGlobal);
 			   
-               UART_direct_msg_put(" Temp: 0x");
+               UART_direct_msg_put(" Temp. (Celsius): 0x");
                cutUpNSendWord(tempGlobal);
 							
-               UART_direct_msg_put(" Freq: 0x");
-							cutUpNSendWord(freqGlobal);			  
+               UART_direct_msg_put(" Freq. (Hz): 0x");
+							cutUpNSendWord(freqGlobal);  
 			  
                // clear flag to ISR      
                display_flag = 0;

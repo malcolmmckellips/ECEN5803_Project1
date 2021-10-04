@@ -126,9 +126,10 @@ extern "C" {
 /*********************************/
 // I. Entry and Timer State Calculation
 
+
 void timer0(void)
  {
- 
+
  //  BugMe = 1;  // debugging signal high during Timer0 interrupt on PTB9
    
 /************************************************/    
