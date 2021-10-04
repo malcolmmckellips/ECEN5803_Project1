@@ -175,7 +175,7 @@ void UART_msg_process(void)
             {
                display_mode = NORMAL;
                UART_msg_put("\r\nMode=NORMAL\n");
-               //display_timer = 0;
+               display_timer = 0;
             }
             else
                err = 1;
@@ -278,17 +278,16 @@ void monitor(void)
          {
             if (display_flag == 1)
             {
-               UART_msg_put("\r\nNORMAL ");
-               UART_msg_put(" Flow: ");
-               // ECEN 5803 add code as indicated
-               //  add flow data output here, use UART_hex_put or similar for 
-               // numbers
-               UART_msg_put(" Temp: ");
-               //  add flow data output here, use UART_hex_put or similar for 
-               // numbers
-               UART_msg_put(" Freq: ");
-               //  add flow data output here, use UART_hex_put or similar for 
-               // numbers
+               UART_direct_msg_put("\r\nNORMAL ");
+               UART_direct_msg_put(" Flow: 0x");
+               cutUpNSendWord(flowGlobal);
+			   
+               UART_direct_msg_put(" Temp: 0x");
+               cutUpNSendWord(tempGlobal);
+							
+               UART_direct_msg_put(" Freq: 0x");
+							cutUpNSendWord(freqGlobal);
+
                display_flag = 0;
             }
          }  
@@ -298,18 +297,14 @@ void monitor(void)
             if (display_flag == 1)
             {
                UART_msg_put("\r\nDEBUG \0");
-               UART_msg_put(" Flow: \0");
-               // ECEN 5803 add code as indicated               
-               //  add flow data output here, use UART_hex_put or similar for 
-               // numbers
-               UART_msg_put(" Temp: \0");
-               //  add flow data output here, use UART_hex_put or similar for 
-               // numbers
-               UART_msg_put(" Freq: \0");
-
-               //  add flow data output here, use UART_hex_put or similar for 
-               // numbers
-			  
+               UART_direct_msg_put(" Flow: 0x");
+               cutUpNSendWord(flowGlobal);
+			   
+               UART_direct_msg_put(" Temp: 0x");
+               cutUpNSendWord(tempGlobal);
+							
+               UART_direct_msg_put(" Freq: 0x");
+							cutUpNSendWord(freqGlobal);			  
 			  
                // clear flag to ISR      
                display_flag = 0;

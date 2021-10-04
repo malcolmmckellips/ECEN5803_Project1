@@ -153,24 +153,7 @@
           <Name>UL2CM3(-S0 -C0 -P0 -FD1ffff000 -FC4000 -FN1 -FF0mk_p128_48mhz -FS00 -FL020000 -FP0($$Device:MKL25Z128xxx4$Flash\MK_P128_48MHZ.FLM))</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
-      <Breakpoint>
-        <Bp>
-          <Number>0</Number>
-          <Type>0</Type>
-          <LineNumber>387</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>16074</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>main.cpp</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression>\\Proj1Mod3\main.cpp\387</Expression>
-        </Bp>
-      </Breakpoint>
+      <Breakpoint/>
       <MemoryWindow2>
         <Mm>
           <WinNumber>2</WinNumber>

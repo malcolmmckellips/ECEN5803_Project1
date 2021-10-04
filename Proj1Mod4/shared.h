@@ -67,6 +67,10 @@ extern "C" {
 /*             Global Variable declarations                             */
 /************************************************************************/
 
+extern volatile uint32_t flowGlobal;	
+extern volatile uint32_t tempGlobal;	
+extern volatile uint32_t freqGlobal;	
+	
  extern UCHAR getFrequencyFlag;
  extern UCHAR LED_heartbeatFlag;
  

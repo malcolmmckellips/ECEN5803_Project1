@@ -418,112 +418,70 @@ float getTemp(){
 	
 }
 
+volatile uint32_t flowGlobal;
+volatile uint32_t tempGlobal;
+volatile uint32_t freqGlobal;
+
 int main() 
 {
-	// tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
+	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 	calibrateADC();
+	
+//	initialize serial buffer pointers
+  rx_in_ptr =  rx_buf; /* pointer to the receive in data */
+  rx_out_ptr = rx_buf; /* pointer to the receive out data*/
+  tx_in_ptr =  tx_buf; /* pointer to the transmit in data*/
+  tx_out_ptr = tx_buf; /* pointer to the transmit out */
+   
+  
+ // Print the initial banner
+   pc.printf("\r\nHello World!\n\n\r");                
+  
+  UART_direct_msg_put("\r\nSystem Reset\r\nCode ver. ");
+  UART_direct_msg_put( CODE_VERSION );
+  UART_direct_msg_put("\r\n");
+  UART_direct_msg_put( COPYRIGHT );
+  UART_direct_msg_put("\r\n");
+
+  set_display_mode();          
 	
   uint32_t  count = 0;   
 	
 	volatile uint16_t currentFreq;
 	
-	volatile float flow;
+	//extern volatile float flow;
 	
 	while (1) {
 		
 		count++;               // counts the number of times through the loop
 		
-		// if((SwTimerIsrCounter& 0x0001)>0){
-			
-			// currentFreq = calculate_frequency();
-			
-		// }
+		serial();            // Polls the serial port
+        chk_UART_msg();     // checks for a serial port message received
+        monitor();           // Sends serial port output messages depending
 		
-		// if(LED_heartbeatFlag){
+		if((SwTimerIsrCounter& 0x0001)>0){
 			
-			// redLED = !redLED;
-			// LED_heartbeatFlag = 0;
+			freqGlobal = (uint32_t)calculate_frequency();
+			tempGlobal = (uint32_t)getTemp();
 			
-		// }
+		}
 		
-		// if(getFrequencyFlag)
-		// {
-			flow = calculate_flow(currentFreq,getTemp());
+		if(LED_heartbeatFlag){
+			
+			redLED = !redLED;
+			LED_heartbeatFlag = 0;
+			
+		}
+		
+		if(getFrequencyFlag)
+		{
+			flowGlobal = (uint32_t)calculate_flow(currentFreq,getTemp());
 			getFrequencyFlag = 0;
-		// }
+		}
 		
-		// if ((SwTimerIsrCounter & 0x1FFF) > 0x0FFF)
-		// {
-           // flip();  // Toggle Green LED
-       	// }	
 		
-		// vortexValraw = readADC(CHANNEL_1);
-		// vortexValVoltage = (readADC(CHANNEL_1)) * 3.3f / 65536;
-		
-		// currentFreq = calculate_frequency();
-		// currentTemp = getTemp();
-		
-		// flow = calculate_flow(currentFreq,currentTemp);
-
-   }
-	
-/****************      ECEN 5803 add code as indicated   ***************/
-
-
-
-    
-// initialize serial buffer pointers
-  // rx_in_ptr =  rx_buf; /* pointer to the receive in data */
-  // rx_out_ptr = rx_buf; /* pointer to the receive out data*/
-  // tx_in_ptr =  tx_buf; /* pointer to the transmit in data*/
-  // tx_out_ptr = tx_buf; /* pointer to the transmit out */
-//    
-//   
-//  // Print the initial banner
-//    pc.printf("\r\nHello World!\n\n\r");
-
-//    /****************      ECEN 5803 add code as indicated   ***************/
-//    // uncomment this section after adding monitor code.  
-//   /* send a message to the terminal  */                    
-//   
-//   UART_direct_msg_put("\r\nSystem Reset\r\nCode ver. ");
-//   UART_direct_msg_put( CODE_VERSION );
-//   UART_direct_msg_put("\r\n");
-//   UART_direct_msg_put( COPYRIGHT );
-//   UART_direct_msg_put("\r\n");
-
-//   set_display_mode();                                      
-//   
-//   uint16_t my_freq = 0;
-
-//    while(1)       /// Cyclical Executive Loop
-//    {
-
-
-////     __enable_interrupts();
-////     __clear_watchdog_timer();
-
-//   /****************      ECEN 5803 add code as indicated   ***************/
-//    // uncomment this section after adding monitor code. 
-//    
-//        serial();            // Polls the serial port
-//        chk_UART_msg();     // checks for a serial port message received
-//        monitor();           // Sends serial port output messages depending
-//                         //     on commands received and display mode
-
-
-			
-			//While 1 loop to test frequency detection algorithm. Result: success, my_freq = 1800 Hz
-			/*
-			while(1){
-				volatile uint16_t my_freq = 0;
-				for (int i = 0; i < 2000; i++) {
-					my_freq = calculate_frequency();
-				}
-
-				my_freq = 0; //breakpoint here to peak at the frequency value in debugger...
-			}
-			*/	
+   }   
+                   
 			
 			
 }
