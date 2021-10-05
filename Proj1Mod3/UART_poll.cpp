@@ -68,8 +68,12 @@
  
  UCHAR error_count = 0;
  
-///  \fn void serial(void) 
-/// function polls the serial port for Rx or Tx data
+ /**
+ * @brief Function polls the serial port for Rx or Tx data
+ *
+ * Uart driver function for varied chip set
+ * 
+ */
 void serial(void)       // The serial function polls the serial port for 
                         // received data or data to transmit
 {
@@ -125,10 +129,10 @@ void serial(void)       // The serial function polls the serial port for
   serial_flag = 1;        // and set flag
 }
 
-/*******************************************************************************
-* The function UART_direct_msg_put puts a null terminated string directly
-* (no ram buffer) to the UART in ASCII format.
-*******************************************************************************/
+ /**
+ * @brief Function puts a null terminated string directly (no ram buffer) to the UART in ASCII format
+ * 
+ */
 void UART_direct_msg_put(const char *str)
 {
    while( *str != '\0' )
@@ -142,14 +146,20 @@ void UART_direct_msg_put(const char *str)
    }
 }
 
-/*******************************************************************************
-* The function UART_put puts a byte, to the transmit buffer at the location 
-* pointed to by tx_in_idx.  The pointer is incremented circularly as described
-* previously.  If the transmit buffer should wrap around (should be designed 
-* not to happen), data will be lost.  The serial interrupt must be temporarily
-* disabled since it reads tx_in_idx and this routine updates tx_in_idx which is 
-* a 16 bit value.           
-*******************************************************************************/
+/**
+ * @brief Put a byte to the uart transmit buffer
+ *
+ * The function UART_put puts a byte, to the transmit buffer at the location 
+ * pointed to by tx_in_idx.  The pointer is incremented circularly as described
+ * previously.  If the transmit buffer should wrap around (should be designed 
+ * not to happen), data will be lost.  The serial interrupt must be temporarily
+ * disabled since it reads tx_in_idx and this routine updates tx_in_idx which is 
+ * a 16 bit value.           
+ *
+ * @param[in] c
+ *  Byte to put in uart transmit buffer
+ *
+ */
 void UART_put(UCHAR c)
 {
    *tx_in_ptr++ = c;                    /* save character to transmit buffer */
@@ -157,14 +167,21 @@ void UART_put(UCHAR c)
       tx_in_ptr = tx_buf;                     /* 0 <= tx_in_idx < TX_BUF_SIZE */          
 }
 
-/*******************************************************************************
-* The function UART_get gets the next byte if one is available from the receive
-* buffer at the location pointed to by rx_out_idx.  The pointer is circularly 
-* incremented and the byte is returned in R7. Should no byte be available the 
-* function will wait until one is available. There is no need to disable the 
-* serial interrupt which modifies rx_in_idx since the function is looking for a 
-* compare only between rx_in_idx & rx_out_idx.
-*******************************************************************************/
+
+/**
+ * @brief Get a byte from the uart receive buffer
+ *
+ * The function UART_get gets the next byte if one is available from the receive
+ * buffer at the location pointed to by rx_out_idx.  The pointer is circularly 
+ * incremented and the byte is returned in R7. Should no byte be available the 
+ * function will wait until one is available. There is no need to disable the 
+ * serial interrupt which modifies rx_in_idx since the function is looking for a 
+ * compare only between rx_in_idx & rx_out_idx.
+ *
+ * @return
+ *  A UCHAR of the next available byte from the uart receive buffer
+ *
+ */
 UCHAR UART_get(void)
 {
    UCHAR c;
@@ -182,12 +199,19 @@ UCHAR UART_get(void)
    return(c);
 }
 
-/*******************************************************************************
-* The function UART_input returns a 1 if 1 or more receive byte(s) is(are) 
-* available and a 0 if the receive buffer rx_buf is empty.  There is no need to 
-* disable the serial interrupt which modifies rx_in_idx since function is 
-* looking for a compare only between rx_in_idx & rx_out_idx.
-*******************************************************************************/
+
+/**
+ * @brief Get a byte from the uart receive buffer
+ *
+ * The function UART_input returns a 1 if 1 or more receive byte(s) is(are) 
+ * available and a 0 if the receive buffer rx_buf is empty.  There is no need to 
+ * disable the serial interrupt which modifies rx_in_idx since function is 
+ * looking for a compare only between rx_in_idx & rx_out_idx.
+ *
+ * @return
+ *  A UCHAR representing a binary 1 or 0 of whether there is data in the uart receive buffer.
+ *
+ */
 UCHAR UART_input(void)
 {
    if( rx_in_ptr == rx_out_ptr )
@@ -196,10 +220,17 @@ UCHAR UART_input(void)
       return(1);                        /* 1 or more receive characters ready */
 }
 
-/*******************************************************************************
-* The function UART_msg_put puts a null terminated string through the transmit
-* buffer to the UART port in ASCII format.
-*******************************************************************************/
+/**
+ * @brief Put string to uart transmit buffer
+ *
+ * The function UART_msg_put puts a null terminated string through the transmit
+ * buffer to the UART port in ASCII format.
+ *
+ * @param[in] str
+ *  Const char* representing the string to put to the uart transmit buffer
+ *
+ */
+
 void UART_msg_put(const char *str)
 {
    while( *str != '\0' )
@@ -229,10 +260,17 @@ void UART_msg_put(const char *str)
 //   UART_put( hex_to_asc( (c>>4) & 0x0f ));
 //}
 
-/*******************************************************************************
-* HEX_TO_ASC Function
-* Function takes a single hex character (0 thru Fh) and converts to ASCII.
-******************************************************************************/
+/**
+ * @brief HEX_TO_ASC Function
+ *
+ * Function takes a single hex character (0 thru Fh) and converts to ASCII.
+ * 
+ * @param[in] c
+ *  a UCHAR representing the byte to convert to ASCII
+ *
+ * @return
+ *  The converted ascii UCHAR
+ */
 UCHAR hex_to_asc(UCHAR c)
 {
    if( c <= 9 )
@@ -240,10 +278,17 @@ UCHAR hex_to_asc(UCHAR c)
    return( ((c & 0x0f) + 0x37 ));        /* add 37h */
 }
 
-/*******************************************************************************
-* ASC_TO_HEX Function
-* Function takes a single ASCII character and converts to hex.
-*******************************************************************************/
+/**
+ * @brief ASC_TO_HEX Function
+ *
+ * Function takes a single ASCII character and converts to hex.
+ * 
+ * @param[in] c
+ *  a UCHAR representing the byte to convert to hex
+ *
+ * @return
+ *  The converted hex UCHAR
+ */
 UCHAR asc_to_hex(UCHAR c)
 {
    if( c <= '9' )
@@ -251,11 +296,15 @@ UCHAR asc_to_hex(UCHAR c)
    return( (c & 0xdf) - 0x37 );    /* clear bit 5 (lower case) & subtract 37h */
 }
 
-
-/*******************************************************************************
-* The function UART_hex_put puts 1 byte in hex through the transmit buffer to 
-* the UART port.
-*******************************************************************************/
+/**
+ * @brief Put one UART byte
+ *
+ * The function UART_hex_put puts 1 byte in hex through the transmit buffer to 
+ * the UART port.
+ * @param[in] c
+ *  an unsigned char representing the byte to put
+ *
+ */
 void UART_hex_put(unsigned char c)
 {
    UART_put( hex_to_asc( (c>>4) & 0x0f ));  // could eliminate & as >> of UCHAR
@@ -263,10 +312,16 @@ void UART_hex_put(unsigned char c)
    UART_put( hex_to_asc( c & 0x0f ));
 }
 
-/*******************************************************************************
-* The function UART_direct_hex_put puts 1 byte in hex directly (no ram buffer) 
-* to the UART.
-*******************************************************************************/
+/**
+ * @brief Put one UART byte
+ *
+ * The function UART_direct_hex_put puts 1 byte in hex directly (no ram buffer) 
+ * to the UART.
+ *
+ * @param[in] c
+ *  an unsigned char representing the byte to put
+ *
+ */
 void UART_direct_hex_put(unsigned char c)
 {
    TXREG = hex_to_asc( (c>>4) & 0x0f );

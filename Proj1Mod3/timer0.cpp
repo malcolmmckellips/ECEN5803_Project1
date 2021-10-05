@@ -123,7 +123,13 @@ extern "C" {
 /*     Start of Code             */
 /*********************************/
 // I. Entry and Timer State Calculation
-
+ 
+/**
+ * @brief Function for various timer operations. 
+ *
+ * This function utilizes interrupts to implement software timers of various periods. 
+ * 
+ */
 void timer0(void)
  {
  
