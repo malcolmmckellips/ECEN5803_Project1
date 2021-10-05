@@ -31,7 +31,18 @@
 #include <stdio.h>
 #include "shared.h"
 
-
+ /**
+ * @brief Load a word long section of memory
+ *
+ * This function will read a single word from memory into r0 
+ *
+ * @param[in] address
+ *  A 32 bit address of memory to read from
+ *
+ * @return
+ *  The data word pointed to by the input address
+ * 
+ */
 __asm uint32_t loadFromMem(uint32_t address){
 	
 	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
@@ -40,6 +51,15 @@ __asm uint32_t loadFromMem(uint32_t address){
 	
 }
 
+ /**
+ * @brief Send and entire word via UART
+ *
+ * This function will separate a word into bytes so they can be output over uart with UART_direct_hex_put() 
+ *
+ * @param[in] myWord
+ *  A 32 bit word to output over uart
+ * 
+ */
 void cutUpNSendWord(uint32_t myWord){
 	
 	char myByte;
@@ -278,7 +298,7 @@ void monitor(void)
          {
             if (display_flag == 1)
             {
-               UART_direct_msg_put("\r\nNORMAL ");
+               UART_direct_msg_put("\r\nNORMAL \r\n");
                UART_direct_msg_put(" Flow (GPM): 0x");
                cutUpNSendWord(flowGlobal);
 			   
@@ -296,7 +316,7 @@ void monitor(void)
          {
             if (display_flag == 1)
             {
-               UART_msg_put("\r\nDEBUG \0");
+               UART_msg_put("\r\nDEBUG \r\n");
                UART_direct_msg_put(" Flow (GPM): 0x");
                cutUpNSendWord(flowGlobal);
 			   
