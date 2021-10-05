@@ -46,30 +46,29 @@ DigitalOut blueLED(LED_BLUE,1);
 
 Serial pc(USBTX, USBRX);     
  
+ /**
+ * @brief Simple LED flipping function
+ *
+ * This function toggles the green LED 
+ *
+ */
+ 
 void flip()  
 {                
     greenLED = !greenLED;
 }
 
-__asm uint32_t MyloadFromMem(uint32_t address){
-	
-	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
-	
-	BX LR
-	
-}
- 
+
+ /**
+ * @brief Main debug console function
+ *
+ * This function formats and outputs a debug consosle. It also allows users to print data sections including memory and registers. Finally, it formats a heartbeat pattern on an LED
+ * 
+ */
+
 int main() 
 {
 /****************      ECEN 5803 add code as indicated   ***************/
-	uint32_t dummy = 0;
-	
-	dummy = MyloadFromMem(0x0000000D0);
-	dummy = MyloadFromMem(0x000000180);
-	dummy = MyloadFromMem(0x000000198);
-	dummy = MyloadFromMem(0x20002FF0);
-	
-	pc.printf("\r\nDummy: %d\n\n\r",dummy);
 	
 	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 

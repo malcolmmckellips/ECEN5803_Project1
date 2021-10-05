@@ -12,7 +12,7 @@
 --               
 --                
 --  Designed by:  Tim Scherr
---  Revised by:  Student's name 
+--  Revised by:  Malcolm McKellips and Erich Clever 
 -- 
 -- Version: 2.0
 -- Date of current revision:  2016-09-29   
@@ -31,14 +31,21 @@
 #include <stdio.h>
 #include "shared.h"
 
-//Function for outputting register 0 value 
+
+ /**
+ * @brief Function for outputting register 0 value 
+ *
+ */
 __asm uint32_t returnReg0(void){
 	
 	BX	LR;
 	
 }
 
-//Function for outputting register 1 value 
+ /**
+ * @brief Function for outputting register 1 value 
+ *
+ */
 __asm uint32_t returnReg1(void){
 	
 	MOVS	r0,r1;
@@ -46,7 +53,10 @@ __asm uint32_t returnReg1(void){
 	
 }
 
-//Function for outputting register 2 value 
+ /**
+ * @brief Function for outputting register 2 value 
+ *
+ */
 __asm uint32_t returnReg2(void){
 	
 	MOVS	r0,r2;
@@ -54,7 +64,10 @@ __asm uint32_t returnReg2(void){
 	
 }
 
-//Function for outputting register 3 value 
+ /**
+ * @brief Function for outputting register 3 value 
+ *
+ */ 
 __asm uint32_t returnReg3(void){
 	
 	MOVS	r0,r3;
@@ -62,7 +75,10 @@ __asm uint32_t returnReg3(void){
 	
 }
 
-//Function for outputting register 4 value 
+ /**
+ * @brief Function for outputting register 4 value 
+ *
+ */
 __asm uint32_t returnReg4(void){
 	
 	MOVS	r0,r4;
@@ -70,7 +86,10 @@ __asm uint32_t returnReg4(void){
 	
 }
 
-//Function for outputting register 5 value 
+ /**
+ * @brief Function for outputting register 5 value 
+ *
+ */ 
 __asm uint32_t returnReg5(void){
 	
 	MOVS	r0,r5;
@@ -78,7 +97,10 @@ __asm uint32_t returnReg5(void){
 	
 }
 
-//Function for outputting register 6 value 
+ /**
+ * @brief Function for outputting register 6 value 
+ *
+ */ 
 __asm uint32_t returnReg6(void){
 	
 	MOVS	r0,r6;
@@ -86,7 +108,10 @@ __asm uint32_t returnReg6(void){
 	
 }
 
-//Function for outputting register 7 value 
+ /**
+ * @brief Function for outputting register 7 value 
+ *
+ */
 __asm uint32_t returnReg7(void){
 	
 	MOVS	r0,r7;
@@ -94,7 +119,10 @@ __asm uint32_t returnReg7(void){
 	
 }
 
-//Function for outputting register 8 value 
+ /**
+ * @brief Function for outputting register 8 value 
+ *
+ */
 __asm uint32_t returnReg8(void){
 	
 	MOV	r0,r8;
@@ -102,7 +130,10 @@ __asm uint32_t returnReg8(void){
 	
 }
 
-//Function for outputting register 9 value 
+ /**
+ * @brief Function for outputting register 9 value 
+ *
+ */ 
 __asm uint32_t returnReg9(void){
 	
 	MOV	r0,r9;
@@ -110,7 +141,10 @@ __asm uint32_t returnReg9(void){
 	
 }
 
-//Function for outputting register 10 value 
+ /**
+ * @brief Function for outputting register 10 value 
+ *
+ */
 __asm uint32_t returnReg10(void){
 	
 	MOV	r0,r10;
@@ -118,7 +152,10 @@ __asm uint32_t returnReg10(void){
 	
 }
 
-//Function for outputting register 11 value 
+ /**
+ * @brief Function for outputting register 11 value 
+ *
+ */
 __asm uint32_t returnReg11(void){
 	
 	MOV	r0,r11;
@@ -126,7 +163,10 @@ __asm uint32_t returnReg11(void){
 	
 }
 
-//Function for outputting register 12 value 
+ /**
+ * @brief Function for outputting register 12 value 
+ *
+ */ 
 __asm uint32_t returnReg12(void){
 	
 	MOV	r0,r12;
@@ -134,7 +174,10 @@ __asm uint32_t returnReg12(void){
 	
 }
 
-//Function for outputting register 13 value 
+ /**
+ * @brief Function for outputting register 13 value 
+ *
+ */ 
 __asm uint32_t returnReg13(void){
 	
 	MOV	r0,r13;
@@ -142,7 +185,10 @@ __asm uint32_t returnReg13(void){
 	
 }
 
-//Function for outputting register 14 value 
+ /**
+ * @brief Function for outputting register 14 value 
+ *
+ */ 
 __asm uint32_t returnReg14(void){
 	
 	MOV	r0,r14;
@@ -150,7 +196,10 @@ __asm uint32_t returnReg14(void){
 	
 }
 
-//Function for outputting register 15 value 
+ /**
+ * @brief Function for outputting register 15 value 
+ *
+ */ 
 __asm uint32_t returnReg15(void){
 	
 	MOV	r0,r15;
@@ -158,6 +207,21 @@ __asm uint32_t returnReg15(void){
 	
 }
 
+ /**
+ * @brief Get a data word from the stack
+ *
+ * This function will read a single word from the stack into r0
+ *
+ * @param[in] stackOffset
+ *  A 32 bit offset for how deep into the stack we want to read
+ *
+ * @param[in] stackBase
+ *  The address defining the beginning of the stack. We cannot read values beyond this. 
+ *
+ * @return
+ *  The data word found by adding the stack offset to the stack pointer
+ * 
+ */
 __asm uint32_t loadOneFromStack(uint32_t stackOffset,uint32_t stackBase){
 	
 	ADD	r0, r0, SP //Store sum of offset from SP in r0
@@ -176,6 +240,18 @@ AtStackBase
 	BX	LR
 }
 
+ /**
+ * @brief Load a word long section of memory
+ *
+ * This function will read a single word from memory into r0 
+ *
+ * @param[in] address
+ *  A 32 bit address of memory to read from
+ *
+ * @return
+ *  The data word pointed to by the input address
+ * 
+ */
 __asm uint32_t loadFromMem(uint32_t address){
 	
 	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
@@ -184,6 +260,15 @@ __asm uint32_t loadFromMem(uint32_t address){
 	
 }
 
+ /**
+ * @brief Send and entire word via UART
+ *
+ * This function will separate a word into bytes so they can be output over uart with UART_direct_hex_put() 
+ *
+ * @param[in] myWord
+ *  A 32 bit word to output over uart
+ * 
+ */
 void cutUpNSendWord(uint32_t myWord){
 	
 	char myByte;
@@ -199,6 +284,13 @@ void cutUpNSendWord(uint32_t myWord){
 	
 }
 
+ /**
+ * @brief Display the value in every register
+ *
+ * This function will display the data located in each processor register of the M0+
+ *
+ * 
+ */
 void displayRegisters(void){
 	
 				UART_direct_msg_put("\r\nReg 0: ");			
@@ -236,6 +328,13 @@ void displayRegisters(void){
 	
 }
 
+ /**
+ * @brief Display the last 16 values on the stack in reverse chronological order
+ *
+ * The function will step into the stack printing the last 16 values in reverse chronological order by adding to the stack poitner and outputting over UART. 
+ * 
+ */
+
 void	displayStackSixteen(void){
 	
 		UART_msg_put("\r\n");
@@ -250,6 +349,15 @@ void	displayStackSixteen(void){
 		}
 }
 
+ /**
+ * @brief Output a section of memory over UART
+ *
+ * This function will read a word from memory and output it over UART
+ *
+ * @param[in] baseAddress
+ *  A 32 bit address corresponding to the memory location to read.
+ * 
+ */
 void	displayMemSect(uint32_t baseAddress){
 	
 	char displayMemMsg[20];
@@ -294,10 +402,12 @@ void set_display_mode(void)
 }
 
 
-//*****************************************************************************/
-/// \fn void chk_UART_msg(void) 
-///
-//*****************************************************************************/
+ /**
+ * @brief Check a message received over UART
+ *
+ * This function will check incoming UART data to see if it is of an acceptable formtat. It also allows for backspace editing
+ * 
+ */
 void chk_UART_msg(void)    
 {
    UCHAR j;
@@ -355,10 +465,12 @@ void chk_UART_msg(void)
    }
 }
 
-//*****************************************************************************/
-///  \fn void UART_msg_process(void) 
-///UART Input Message Processing
-//*****************************************************************************/
+ /**
+ * @brief UART function for processing input
+ *
+ * This function will see if a recognizable command has been identified. It will check incoming UART messages for certain command strings that will set the display mode of the debug console.
+ * 
+ */
 void UART_msg_process(void)
 {
    UCHAR chr,err=0;
@@ -502,9 +614,12 @@ UCHAR is_hex(UCHAR c)
    return 0;
 }
 
-/*******************************************************************************
-*   \fn  DEBUG and DIAGNOSTIC Mode UART Operation
-*******************************************************************************/
+ /**
+ * @brief DEBUG and DIAGNOSTIC Mode UART Operation
+ *
+ * This function will spew the outputs of the UART monitor. In debug mode it will print the flow, temp, and freq
+ * 
+ */
 void monitor(void)
 {
 
@@ -565,55 +680,6 @@ void monitor(void)
  /****************      ECEN 5803 add code as indicated   ***************/             
                //  Create a display of  error counts, sensor states, and
                //  ARM Registers R0-R15
-				// UART_direct_msg_put("\r\nReg 0: ");			
-				// cutUpNSendWord(returnReg0());
-				// UART_direct_msg_put("Reg 1: ");		
-				// cutUpNSendWord(returnReg1());
-				// UART_direct_msg_put("Reg 2: ");		
-				// cutUpNSendWord(returnReg1());
-				// UART_direct_msg_put("Reg 3: ");		
-				// cutUpNSendWord(returnReg3());
-				// UART_direct_msg_put("Reg 4: ");		
-				// cutUpNSendWord(returnReg4());
-				// UART_direct_msg_put("Reg 5: ");		
-				// cutUpNSendWord(returnReg5());
-				// UART_direct_msg_put("Reg 6: ");		
-				// cutUpNSendWord(returnReg6());
-				// UART_direct_msg_put("Reg 7: ");		
-				// cutUpNSendWord(returnReg7());
-				// UART_direct_msg_put("Reg 8: ");		
-				// cutUpNSendWord(returnReg8());
-				// UART_direct_msg_put("Reg 9: ");		
-				// cutUpNSendWord(returnReg9());
-				// UART_direct_msg_put("Reg 10: ");		
-				// cutUpNSendWord(returnReg10());
-				// UART_direct_msg_put("Reg 11: ");		
-				// cutUpNSendWord(returnReg11());
-				// UART_direct_msg_put("Reg 12: ");		
-				// cutUpNSendWord(returnReg12());
-				// UART_direct_msg_put("Reg 13: ");		
-				// cutUpNSendWord(returnReg13());
-				// UART_direct_msg_put("Reg 14: ");		
-				// cutUpNSendWord(returnReg14());
-				// UART_direct_msg_put("Reg 15: ");		
-				// cutUpNSendWord(returnReg15());
-							
-               //  Create a command to read a section of Memory and display it
-               
-               //  Create a command to read 16 words from the current stack 
-               // and display it in reverse chronological order.
-				//UART_direct_msg_put("\r\n");
-				
-				// for(int i=0;i<16;i++){
-					// sprintf(stackPtrMsg,"SP + %d: ",(i*4));
-					// UART_direct_msg_put(stackPtrMsg);
-					// cutUpNSendWord(loadOneFromStack(i*4,INITIAL_SP));
-					
-				// }
-				
-				
-			  
-			  
                // clear flag to ISR      
                display_flag = 0;
              }   
