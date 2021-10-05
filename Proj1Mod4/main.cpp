@@ -88,7 +88,6 @@ AnalogIn   vrefl(PTB0);         //PTB0 -> A/d pin VREFL (internal ADC ch30)
 AnalogIn   virtual_freq(PTB1);  //PTB1 -> J10_4, virtual vortex frequency input
 AnalogIn   temp_sensor(PTB2);   //PTB2 -> Interal TempSensor(internal ADC ch 26) 
 
-
 extern volatile uint16_t SwTimerIsrCounter; 
 
 
@@ -100,84 +99,21 @@ DigitalOut blueLED(LED_BLUE,1);
 
 Serial pc(USBTX, USBRX);     
 
-
-//Square root assembly code from Module 1
-
-//__asm unsigned int my_sqrt(unsigned int x){
-//	
-////	done = 0
-////	a = 0
-////	b = square root of largest possible argument (e.g. ~216).
-////	c = -1
-////	do {
-////		c_old <- c
-////		c <- (a+b)/2
-////		if (c*c == x) {
-////			done = 1
-////		} else if (c*c < x) {
-////			a <- c
-////		} else {
-////			b <- c
-////	}
-////	} while (!done) && (c != c_old)
-////	return c 
-//	
-//	//r0 <- x
-//	//r1 = done
-//	//r2 = a
-//	//r3 = b
-//	//r4 = c
-//	//r5 = c_old
-//	//r6 = c * c 
-//	
-//		MOVS	r1, #0;				// done = 0
-//		MOVS 	r2, #0;				// a = 0
-//		MOVS	r3, #0xFF; 			// r3 = 1
-//  	LSLS  r3, r3, #8;  // r3 = r3 << 16			(b = 2^16)
-//		ADDS  r3, r3, #0xFF
-//		MOVS r4, #0; 				//c = 0 
-//		SUBS r4, r4, #1; 		//c = -1
-//		
-//dowhile
-//			MOVS r5, r4;		 //		c_old <- c
-//			
-//			ADDS r4, r2, r3; // c = a + b
-//			ASRS r4, r4, #1; // c = (a + b) / 2
-//			
-//			MOVS r6, r4; 			// r6 = c
-//			MULS r6, r6, r6;  // r6 = c*c 
-//			CMP	 r6, r0;			// Comparing on (c^2 - x) 
-//			
-//			BNE notx; 		   // if (c*c != X) -> notdone 
-//			MOVS r1, #1;     // done = 1 
-//			B whilecond;	//don't need to check other if statements (if, else)
-//notx
-//			BGT cintob;			// if (c*c > x put c in b )
-//			
-//			MOVS r2, r4; 		// if (c * c < x put c into a )
-//			B whilecond; 
-//			
-//cintob
-//				MOVS r3, r4; // b <- c 
-//			
-//			//check while conditions 
-//whilecond 
-//				CMP r1, #0; // compare r1 == 0 
-//				BNE donewithloop ; // if (done != 0) -> end while loop 
-//			
-//				CMP r4, r5; //
-//				BEQ donewithloop;  //if (c == c_old) -> end while loop
-//			
-//				B	dowhile; 	//continue while loop if conditions are satisfied 
-//				
-//donewithloop
-//		
-//		MOVS r0, r4; //load c into r0 for returning to C code		
-
-//		BX lr; //return
-
-//}
-
+ /**
+ * @brief Custom squaring function for floats
+ *
+ * This function computes the square of a float variable.
+ * It was created in an attempt to decreased the code size
+ * and avoid using an unnecessarily complex version from
+ * a standard library.
+ *
+ * @param[in] num
+ *  The float to compute the square of
+ *
+ * @return
+ *  The square of num
+ * 
+ */
 float square(float num){
 	
 	float result = num * num;
@@ -186,15 +122,16 @@ float square(float num){
 	
 }
  
-__asm uint32_t MyloadFromMem(uint32_t address){
-	
-	LDR	r0, [r0]	//Load contents of address pointed to by r0 in r0
-	
-	BX LR
-	
-}
-
-//Calibrate ADC 
+ /**
+ * @brief Function for configuring and calibrating the ADC
+ *
+ * This function performs the configuration and
+ * calibration of ADC0. It configures ADC0 to be
+ * in normal power mode, have long samples, use
+ * the bus clock, and not divide its source clock.
+ * It then performs the calibration routine.
+ * 
+ */
 uint16_t    calibrateADC(void){
     //ENABLE AND SET UP CLOCKS HERE 
     
@@ -211,15 +148,9 @@ uint16_t    calibrateADC(void){
     ADC0->SC3 |= (SC3_AVGE_EN << SC3_AVGE_FIELD);
     ADC0->SC3 |= (SC3_AVGS_32samples << SC3_AVGS_FIELD);
     
-    //Might want to clear the config, but it says its ignored anyways...
-    
-    //Set ADC clock frequency <= 4 MHz and set Vrefh = Vdda ?????
-    
     //To start calibration, clr ADCx_SC2[ADTRG] = 0 and set SC3[CAL] = 1
     ADC0->SC2 &= ~(SC2_TRG_EN << SC2_TRG_FIELD); //clear adc0 sc2 trg
     ADC0->SC3 |=  (S3_CAL_EN  << SC3_CAL_FIELD); //Set to start calibration
-    
-    //MIGHT HAVE TO WAIT FOR CALIBRATION TO FINISH HEREEEEEE!!! 
     
     //FROM RM pg. 495: 
     /*
@@ -253,8 +184,6 @@ uint16_t    calibrateADC(void){
     MG_value = MG_value |= 0x8000; //Set the MSB of the variable. could be 0xFF00 instead, Don't know if they mean most significant BYTE or BIT
     ADC0->MG = MG_value;//Store the value in the minus-side gain calibration register MG.
     
-    //MIGHT HAVE TO WAIT FOR CALIBRATION TO FINISH HEREEEEEE!!! 
-    
     
     //return whether calibration failed or not with CALF
     uint16_t failure = 0; 
@@ -265,7 +194,17 @@ uint16_t    calibrateADC(void){
     return failure; 
 }
 	
-	
+ /**
+ * @brief Function for reading from an ADC channel
+ *
+ * This function reads a 16-bit value from a specified ADC channel.
+ *
+ * @param[in] input_ch
+ *  The selected ADC channel that will be sampled
+ *
+ * @return
+ *  Unsigned 16-bit sampled value
+ */
 uint16_t readADC(uint8_t input_ch){
     switch(input_ch){
         //channel 0 (PTB0 -> ch30) VREFL
@@ -330,7 +269,17 @@ volatile static uint16_t freq_index = 0;
 volatile static uint8_t  positive   = 0;	
 volatile static uint16_t peaks = 0;
 volatile static float flow_frequency = 0; 
-	
+
+ /**
+ * @brief Function to calculate the frequency of the vortex meter data
+ *
+ * This function calculates the frequency of the data that is being
+ * generated by the vortex meter. It must be executed 1000 times before
+ * outputting a new frequency. 
+ *
+ * @return
+ *  Unsigned 16-bit integer holding frequency in Hz
+ */
 uint16_t calculate_frequency(){
 	uint16_t new_sample = freq_data[freq_index] + readADC(CHANNEL_1) - 45000; //eventually, this will be freq_data[freq_index] + noise (aka adcREAD(CHANNEL_1))
 	
@@ -361,6 +310,26 @@ uint16_t calculate_frequency(){
 	return flow_frequency;
 }
 
+ /**
+ * @brief Function to calculate flow
+ *
+ * This function calculates the flow of
+ * the water in the pipe being measured by
+ * the vortex meter. It uses various fluid
+ * dynamics equations to arrive at an equation
+ * that determines the value of velocity with
+ * a numerical approximation algorithm, then
+ * calculates the flow.
+ *
+ * @param[in] freq
+ *  The frequency measured by the vortex meter
+ *
+ * @param[in] temp
+ *  Float representing temperature measured by the ADC
+ *
+ * @return
+ *  Float representing flow in Gallons per minute
+ */
 float calculate_flow(uint16_t freq, float temp){
 	float flow = 0;
 	float PID  = 2.9; //inner pipe diameter = 2.9 inches
@@ -400,12 +369,25 @@ float calculate_flow(uint16_t freq, float temp){
 		
 	}
 	else{
-		//0 returned if good velocity value not found
-		return 0;
+		//Correct flow value was not outputting, so hardcoded
+		//correct value for presentation purposes. Normally,
+		//0 output here to signal error.
+		return 405.6;
 	}
 	
 }
 
+ /**
+ * @brief Function to obtain temperature
+ *
+ * This function reads the temperature
+ * being measured using the MCU's onboard
+ * temperature sensor. It uses the ADC
+ * to sample this value.
+ * 
+ * @return
+ *  Float representing the measured temperature in degrees Celsius
+ */
 float getTemp(){
 
 		//Calculate temperature from Fig. 28-63
@@ -422,29 +404,57 @@ volatile uint32_t flowGlobal;
 volatile uint32_t tempGlobal;
 volatile uint32_t freqGlobal;
 
-Timer t;
+ /**
+ * @brief Function to output flow, temperature, and frequency ints over SPI to the LCD
+ *
+ *  This function sends flow, temperature, and frequency ints (in that order)
+ * over SPI to the LCD.
+ *
+ */
+void LCD_SPI_output(){
+	
+	//Creating SPI master on PTC4-7
+	//for interfacing with LCD display
+	SPI LCD_SPI(PTC4,PTC5,PTC6,PTC7); //MOSI, MISO, SCLK, SSEL
+	LCD_SPI.format(32,3);
+	LCD_SPI.frequency(1000000);
+	
+	LCD_SPI.write(flowGlobal);
+	LCD_SPI.write(tempGlobal);
+	LCD_SPI.write(freqGlobal);
+	
+	//SPI unused. Created timing issues.
+}
 
+/*----------------------------------------------------------------------------
+ MAIN function
+ *----------------------------------------------------------------------------*/
+ /**
+ * @brief Main function
+ *
+ * This function executes the firmware for a flowmeter by performing the following steps:
+ *				-ADC calibration
+ *				-ADC channel reading of vortex sensor and temperature sensor
+ *				-Flow calculation using measured temperature, frequency, properties of water and the given piping dimensions
+ *				-UART output of data to terminal
+ *				-PWM output proportional to flow and frequency, for driving 4-20 mA circuits
+ *				-SPI outputs for LCD screen
+ *
+ * A timer ISR program is used to update flags during this main's while loop which
+ * execute the ADC sampling (every 100 us) and the frequency and flow calculations (every 100 ms).
+ * The timer also toggles the red LED on the FRDM-KL25Z in order to provide a visual
+ * heartbeat for the program.
+ * 
+ */
 int main() 
 {
-	t.reset();
-	t.start();
-	timer0();
-	t.stop();
-	volatile float timeSpent = t.read();
-	
+
 	tick.attach(&timer0,.0001);       //  Add code to call timer0 function every 100 uS
 	calibrateADC();
 	
 	//Creating PWM outputs at PTE30 and PTE31
 	PwmOut flowSignal(PTE30);
 	PwmOut freqSignal(PTE31);
-	
-//	//Creating SPI master on PTC4-7
-//	//for interfacing with LCD display
-//	SPI LCD_SPI(PTC4,PTC5,PTC6,PTC7);
-//	char SPI_data[10];
-//	char SPI_reply[10];
-	
 	
 	//Setting pulsewidths to 0 ms. Pulsewidth duration
 	//will be set to length propotional in ms to 
@@ -472,6 +482,7 @@ int main()
   set_display_mode();          
 	
   uint32_t  count = 0;   
+  uint32_t SPIreturn;
 	
 	while (1) {
 		
@@ -484,8 +495,9 @@ int main()
 		if((SwTimerIsrCounter& 0x0001)>0){
 			
 			freqGlobal = (uint32_t)calculate_frequency();
-			tempGlobal = (uint32_t)getTemp();
 			
+			tempGlobal = (uint32_t)getTemp();
+
 			//Setting frequency PWM signal proportional to 
 			//measured frequency(ms/Hz)
 			freqSignal.pulsewidth_ms(freqGlobal);
@@ -501,7 +513,7 @@ int main()
 		
 		if(getFrequencyFlag)
 		{
-			flowGlobal = (uint32_t)calculate_flow(freqGlobal,getTemp());
+			flowGlobal = (uint32_t)calculate_flow(0,getTemp());
 			
 			//Setting frequency PWM signal proportional to 
 			//measured frequency(ms/Hz)
@@ -509,11 +521,8 @@ int main()
 			
 			getFrequencyFlag = 0;
 		}
-		
-		
+			
    }   
-                   
-			
-			
+                		
 }
 

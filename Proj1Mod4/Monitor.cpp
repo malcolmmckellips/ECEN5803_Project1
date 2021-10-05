@@ -278,7 +278,7 @@ void monitor(void)
          {
             if (display_flag == 1)
             {
-               UART_direct_msg_put("\r\nNORMAL ");
+               UART_direct_msg_put("\r\nNORMAL \r\n");
                UART_direct_msg_put(" Flow (GPM): 0x");
                cutUpNSendWord(flowGlobal);
 			   
@@ -296,7 +296,7 @@ void monitor(void)
          {
             if (display_flag == 1)
             {
-               UART_msg_put("\r\nDEBUG \0");
+               UART_msg_put("\r\nDEBUG \r\n");
                UART_direct_msg_put(" Flow (GPM): 0x");
                cutUpNSendWord(flowGlobal);
 			   

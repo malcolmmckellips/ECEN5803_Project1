@@ -27,19 +27,24 @@ Project File Date:  10/02/2021
 <h2>Output:</h2>
 *** Using Compiler 'V5.06 update 7 (build 960)', folder: 'C:\Keil_v5\ARM\ARMCC\Bin'
 Rebuild target 'Proj1Mod3'
-compiling timer0.cpp...
-compiling UART_poll.cpp...
 compiling Monitor.cpp...
 Monitor.cpp(204): warning:  #111-D: statement is unreachable
   			display_timer = 0;
 Monitor.cpp: 1 warning, 0 errors
+compiling timer0.cpp...
+compiling UART_poll.cpp...
 compiling main.cpp...
+main.cpp(478): warning:  #177-D: variable "SPIreturn"  was declared but never referenced
+    uint32_t SPIreturn;
+main.cpp: 1 warning, 0 errors
 linking...
 .\BUILD\Proj1Mod3.axf: Warning: L6320W: Ignoring --keep command. Cannot find argument 'os_cb_sections'.
-Program Size: Code=32104 RO-data=5368 RW-data=200 ZI-data=620  
+Program Size: Code=31848 RO-data=5368 RW-data=200 ZI-data=604  
 Finished: 0 information, 1 warning and 0 error messages.
 FromELF: creating hex file...
-".\BUILD\Proj1Mod3.axf" - 0 Error(s), 2 Warning(s).
+.\BUILD\Proj1Mod3.hex: Warning: Q9931W: Your license for feature Keil will expire in 30 days
+Finished: 0 information, 1 warning and 0 error messages.
+".\BUILD\Proj1Mod3.axf" - 0 Error(s), 3 Warning(s).
 
 <h2>Software Packages used:</h2>
 
